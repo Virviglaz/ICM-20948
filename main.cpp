@@ -1,19 +1,21 @@
 #include "ICM-20948.h"
 #include "i2c.h"
+#include "spi.h"
 #include <exception>
 #include <cstdio>
 #include <thread>
 #include <chrono>
+#include <cstring>
 
 /* I2C interface and device provided by my custom platform-independent implementation */
-static I2C_Interface i2c_interface;
-static I2C_DeviceBase i2c_device(i2c_interface, 0x68);
-static ICM20948_I2C icm20948_ifs(i2c_device);
-static ICM20948_DMP icm20948(icm20948_ifs);
+static SPI_Interface spi_interface;
+static SPI_DeviceBase spi_device(spi_interface);
+static ICM20948_SPI icm20948_spi(spi_device);
+static ICM20948_DMP icm20948(icm20948_spi);
 
 int main(int argc, char *argv[])
 {
-    i2c_interface.Init(argc > 1 ? argv[1] : "/dev/i2c-0");
+    spi_interface.Init(argc > 1 ? argv[1] : "/dev/spidev1.0");
 
     int res = 0;
     try {
@@ -27,6 +29,9 @@ int main(int argc, char *argv[])
             printf("ICM-20948 initialized successfully\n");
             res = icm20948.Calibrate();
             printf("ICM-20948 calibration %s\n", res ? "failed" : "succeeded");
+        } else {
+            fprintf(stderr, "Failed to initialize ICM-20948: Error code %d (%s)\n", res, strerror(-res));
+            return res;
         }
     } catch (const std::exception &e) {
         fprintf(stderr, "Failed to initialize ICM-20948: %s\n", e.what());

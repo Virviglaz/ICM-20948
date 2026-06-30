@@ -69,6 +69,8 @@ public:
     void Read(uint8_t reg, uint8_t* data, size_t length);
     void Write(uint8_t reg, const uint8_t* data, size_t length);
 
+    virtual uint8_t SPI_IFS_Enabled() { return 0; }
+
     /* Pure virtual methods to be implemented by derived classes for specific interfaces */
     virtual void Write(const uint8_t *reg_addr,
                        size_t reg_addr_size,
@@ -121,6 +123,8 @@ public:
               size_t reg_addr_size,
               uint8_t *data,
               size_t length) override;
+
+    uint8_t SPI_IFS_Enabled() override { return 1 << 4; }
 private:
     SPI_DeviceBase& device_;
     uint8_t buffer_[512]; // Temporary buffer for SPI transactions (adjust size as needed)

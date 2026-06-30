@@ -380,7 +380,6 @@ ICM20948::cal_offsets ICM20948::ReadCalibrationOffsets()
 
 void ICM20948::WriteCalibrationOffsets(const cal_offsets& offsets)
 {
-    
     SwitchMemoryBank(1);
     ifs_.WriteReg_s16(ACCEL_X_OFFSET_H, offsets.acc_x_offset << 1);
     ifs_.WriteReg_s16(ACCEL_Y_OFFSET_H, offsets.acc_y_offset << 1);
@@ -402,7 +401,7 @@ void ICM20948::EnableFifo()
     ifs_.WriteReg(FIFO_CONFIG, 0x00); // 0x69 = FIFO_CONFIG, set FIFO mode to stop when full (default) and no watermark
     ifs_.WriteReg(FIFO_EN_1, 0x00); // Do not use external sensor data channels (Aux Slave 0-3) in the FIFO stream
     ifs_.WriteReg(FIFO_EN_2, 0x1F); // Use data from all 5 internal sensor channels (Accel, Gyro, Temp) in the FIFO stream
-    ifs_.WriteReg(USER_CTRL, BIT(6)); // Enable FIFO operation by setting FIFO_EN (Bit 6) in USER_CTRL
+    ifs_.WriteReg(USER_CTRL, BIT(6) | ifs_.SPI_IFS_Enabled()); // Enable FIFO operation by setting FIFO_EN (Bit 6) in USER_CTRL
 
     isFifoEnabled = true;
 }
@@ -414,7 +413,7 @@ void ICM20948::DisableFifo()
     }
 
     SwitchMemoryBank(0);
-    ifs_.WriteReg(USER_CTRL, 0x00);
+    ifs_.WriteReg(USER_CTRL, ifs_.SPI_IFS_Enabled()); // Disable FIFO operation by clearing FIFO_EN (Bit 6) in USER_CTRL
     ifs_.WriteReg(LP_CONFIG, 0x00);
 
     isFifoEnabled = false;
@@ -423,10 +422,11 @@ void ICM20948::DisableFifo()
 int ICM20948::CheckWhoAmI()
 {
     SwitchMemoryBank(0); // Ensure we are in Bank 0 to read the WHO_AM_I register
-    uint8_t who_am_i = ifs_.ReadReg(WHO_AM_I);
-    if (who_am_i != 0xEA) { // Expected value for ICM-20948
+
+    if (ifs_.ReadReg(WHO_AM_I) != 0xEA) { // Expected value for ICM-20948
         return -ENODEV; // Device not found
     }
+
     return 0; // Device is present and responding correctly
 }
 
@@ -444,7 +444,7 @@ int ICM20948_MAG::Init()
     SwitchMemoryBank(0);
     ifs_.WriteReg(INT_PIN_CFG, 0x00); // Clear INT_PIN_CFG to disable bypass mode and allow I2C Master control
     ifs_.WriteReg(LP_CONFIG, 0x00); // Clear LP_CONFIG to disable low-power mode and allow I2C Master control
-    ifs_.WriteReg(USER_CTRL, BIT(5)); // Set I2C_MST_EN (Bit 5) to enable the auxiliary I2C Master interface
+    ifs_.WriteReg(USER_CTRL, BIT(5) | ifs_.SPI_IFS_Enabled()); // Set I2C_MST_EN (Bit 5) to enable the auxiliary I2C Master interface
 
     // STEP 2: Configure internal I2C clock speed (Must be done in Bank 3)
     SwitchMemoryBank(3);
@@ -635,7 +635,8 @@ int ICM20948_DMP::Init()
         #include "ICM-20948-dmp_img.h"
     };
     const uint32_t size = sizeof(firmware_data);
-    const uint32_t DMP_PAGE_SIZE = 256; 
+    const uint32_t DMP_PAGE_SIZE = 256;
+    const uint32_t I2C_BURST_SIZE = 16;
 
     // Hardware registers for DMP memory interaction (All inside User Bank 0)
     const uint8_t REG_MEM_BANK_SEL   = 0x7C;
@@ -653,7 +654,7 @@ int ICM20948_DMP::Init()
         uint8_t start_address = (uint8_t)(bytes_written & 0xFF); 
 
         uint32_t bytes_remaining = size - bytes_written;
-        uint32_t chunk_size = (bytes_remaining > DMP_PAGE_SIZE) ? DMP_PAGE_SIZE : bytes_remaining;
+        uint32_t chunk_size = (bytes_remaining > I2C_BURST_SIZE) ? I2C_BURST_SIZE : bytes_remaining;
 
         if (start_address + chunk_size > DMP_PAGE_SIZE) {
             chunk_size = DMP_PAGE_SIZE - start_address;
@@ -665,9 +666,10 @@ int ICM20948_DMP::Init()
         ifs_.WriteReg(REG_MEM_START_ADDR, start_address);
 
         // Stream bytes sequentially into the auto-incrementing R_W register
-        for (uint32_t i = 0; i < chunk_size; i++) {
+        /*for (uint32_t i = 0; i < chunk_size; i++) {
             ifs_.WriteReg(REG_MEM_R_W, firmware_data[bytes_written + i]);
-        }
+        }*/
+        ifs_.Write(REG_MEM_R_W, firmware_data + bytes_written, chunk_size); // Write the entire chunk in one go
 
         bytes_written += chunk_size;
     }
@@ -695,7 +697,7 @@ int ICM20948_DMP::Init()
     ifs_.WriteReg(0x7B, 0x00);
 
     // 4. Final step: Boot up the DMP and enable FIFO data streaming
-    ifs_.WriteReg(USER_CTRL, BIT(7) | BIT(6)); 
+    ifs_.WriteReg(USER_CTRL, BIT(7) | BIT(6) | ifs_.SPI_IFS_Enabled()); 
 
     return 0; 
 }
