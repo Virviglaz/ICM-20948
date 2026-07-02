@@ -258,6 +258,7 @@ public:
     class RawData {
         friend class ICM20948;
     public:
+        RawData() = default;
         RawData(float acc_scale, float gyro_scale)
             : _acc_scale(acc_scale), _gyro_scale(gyro_scale) {}
         float GetAccX() const;
@@ -295,7 +296,7 @@ public:
      * This method reads the raw accelerometer, gyroscope, and temperature data from the ICM-20948 and returns it as a RawData
      * struct. The raw values are in big-endian format and are converted to native endianness before being returned.
      */
-    RawData GetData();
+    virtual RawData GetData();
 
     /**
      * @brief Performs a calibration of the ICM-20948 sensor.
@@ -441,6 +442,18 @@ public:
     int Init() override;
 
     /**
+     * @brief Reads raw data from FIFO discarding the DMP data.
+     *
+     * This method reads the raw accelerometer, gyroscope,
+     * and temperature data from the ICM-20948's FIFO buffer,
+     * discarding any DMP data that may be present.
+     * It returns the latest raw sensor data as a RawData struct.
+     *
+     * @return The latest raw sensor data as a RawData struct.
+     */
+    RawData GetData() override;
+
+    /**
      * Struct to hold the real-world IMU data obtained from the DMP.
      * This includes roll, pitch, and yaw angles in degrees,
      * angular velocity (gx, gy, gz) in degrees per second,
@@ -453,6 +466,7 @@ public:
      */
     struct RealIMUData
     {
+    	ICM20948::RawData raw_data; ///< The raw sensor data from the ICM-20948.
         float roll, pitch, yaw;                // angles in degrees
         float gx, gy, gz;                      // angular velocity in degrees per second
         float ax_linear, ay_linear, az_linear; // linear acceleration in m/s²

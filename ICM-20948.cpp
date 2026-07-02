@@ -310,11 +310,14 @@ ICM20948::RawData ICM20948::GetData()
 
     return data;
 }
-
+#include <cstdio>
 uint16_t ICM20948::FifoCount()
 {
     SwitchMemoryBank(0); // Ensure we are in Bank 0 to read FIFO count registers
-    return static_cast<uint16_t>(ifs_.ReadReg_s16(FIFO_COUNTH));
+    //return static_cast<uint16_t>(ifs_.ReadReg_s16(FIFO_COUNTH));
+    auto fifo_count = ifs_.ReadReg_s16(FIFO_COUNTH); // Read FIFO count as signed 16-bit integer
+    printf("FIFO Count: %d\n", fifo_count); // Debug print of FIFO count
+    return static_cast<uint16_t>(fifo_count); // Return FIFO count as unsigned 16-bit integer
 }
 
 bool ICM20948::IsDataReady()
@@ -726,9 +729,6 @@ int ICM20948_DMP::Init()
         ifs_.WriteReg(REG_MEM_START_ADDR, start_address);
 
         // Stream bytes sequentially into the auto-incrementing R_W register
-        /*for (uint32_t i = 0; i < chunk_size; i++) {
-            ifs_.WriteReg(REG_MEM_R_W, firmware_data[bytes_written + i]);
-        }*/
         ifs_.Write(REG_MEM_R_W, firmware_data + bytes_written, chunk_size); // Write the entire chunk in one go
 
         bytes_written += chunk_size;
@@ -760,6 +760,11 @@ int ICM20948_DMP::Init()
     ifs_.WriteReg(USER_CTRL, BIT(7) | BIT(6) | ifs_.SPI_IFS_Enabled()); 
 
     return 0; 
+}
+
+ICM20948::RawData ICM20948_DMP::GetData()
+{
+	return GetRealIMUData().raw_data;
 }
 
 ICM20948_DMP::RealIMUData ICM20948_DMP::GetRealIMUData()
