@@ -241,6 +241,15 @@ public:
      */
     void SetGyroAvgRate(GyroAvgRate rate = GyroAvgRate::AVG_1);
 
+    enum class IcmOdr {
+        ODR_220_HZ,  // Gyro: 220Hz (div 4),  Accel: 225Hz (div 4)
+        ODR_100_HZ,  // Gyro: 100Hz (div 10), Accel: 102.2Hz (div 10)
+        ODR_50_HZ,   // Gyro: 50Hz (div 21),  Accel: 51.1Hz (div 21)
+        ODR_20_HZ    // Gyro: 20Hz (div 54),  Accel: 20.4Hz (div 54)
+    };
+
+    void SetSynchronizedSampleRate(IcmOdr target_odr);
+
     /**
      * RawData struct represents the raw sensor data read from the ICM-20948. It includes raw accelerometer, gyroscope, and temperature readings.
      * The GetTemperature(), GetAccX(), GetAccY(), GetAccZ(), GetGyroX(), GetGyroY(), and GetGyroZ() methods convert the raw readings to
@@ -277,7 +286,11 @@ public:
     RawData WaitForData();
 
     /**
-     * Returns the latest raw sensor data without waiting. The caller should ensure that new data is available before calling
+     * @brief Wait for new sensor data to be available and returns the raw data.
+     *
+     * @note This method will block until new data is ready.
+     *
+     * @return the latest raw sensor data without waiting. The caller should ensure that new data is available before calling
      * this method, either by using EnableDataReadyInterrupt() and checking IsDataReady(), or by implementing their own timing mechanism.
      * This method reads the raw accelerometer, gyroscope, and temperature data from the ICM-20948 and returns it as a RawData
      * struct. The raw values are in big-endian format and are converted to native endianness before being returned.
@@ -285,7 +298,9 @@ public:
     RawData GetData();
 
     /**
-     * Performs a calibration of the ICM-20948 sensor. The calibration process adjusts the hardware offset registers
+     * @brief Performs a calibration of the ICM-20948 sensor.
+     *
+     * The calibration process adjusts the hardware offset registers
      * iteratively to minimize the error between the sensor readings and the expected values (0 g for accelerometer axes,
      * 0 °/s for gyro axes). The calibration will run for a maximum of max_iterations or until the error is within
      * target_error LSB of the target values.
@@ -322,8 +337,9 @@ public:
         "cal_offsets struct must be exactly 12 bytes to match the ICM-20948 offset register layout");
 
     /**
-     * Reads the current calibration offsets from the ICM-20948's hardware
-     * offset registers and returns them as a cal_offsets struct.
+     * @brief Reads the current calibration offsets from the ICM-20948 hardware registers
+     * and returns them as a cal_offsets struct.
+     *
      * The caller can use this method to retrieve the current offsets
      * before starting a calibration process, or to read the offsets after
      * calibration to save them for future use.
@@ -331,6 +347,8 @@ public:
     cal_offsets ReadCalibrationOffsets();
 
     /**
+     * @brief Writes the provided calibration offsets to the ICM-20948's hardware offset registers.
+     *
      * Writes the given calibration offsets to the ICM-20948's hardware offset registers.
      * The caller can use this method to apply new offsets to the sensor, either as
      * part of a calibration process or to restore previously saved offsets. The offsets
@@ -341,26 +359,40 @@ public:
     void WriteCalibrationOffsets(const cal_offsets& offsets);
 
     /**
-     * Enables the FIFO buffer on the ICM-20948. When enabled, sensor data will be stored in the FIFO buffer for later retrieval.
+     * @brief Enables the FIFO buffer on the ICM-20948.
+     *
+     * When enabled, sensor data will be stored in the FIFO buffer for later retrieval.
      * This method configures the necessary registers to enable FIFO operation and should be called before attempting to read data from the FIFO.
      */
     void EnableFifo();
 
     /**
-     * Disables the FIFO buffer on the ICM-20948. When disabled, sensor data will no longer be stored in the FIFO buffer.
+     * @brief Disables the FIFO buffer on the ICM-20948.
+     *
+     * When disabled, sensor data will no longer be stored in the FIFO buffer.
      * Data ready interrupts will be used instead to indicate when new sensor data is available.
      */
     void DisableFifo();
+
+    /**
+     * @brief Check if the FIFO buffer is full.
+     *
+     * @return true if the FIFO buffer is full, false otherwise.
+     */
+    bool IsFifoOverflown();
+
+    /**
+	 * @brief Reset the FIFO buffer on the ICM-20948.
+	 */
+    virtual void ResetFIFO();
 protected:
     ICM20948_IFS_Base& ifs_;
 
     /* Replace this with a GPIO read implementation if needed */
     virtual bool IsDataReady();
     uint16_t FifoCount();
-    virtual void ResetFIFO();
     void SwitchMemoryBank(uint8_t bank);
     bool isFifoEnabled = false;
-    
 private:
     int CheckWhoAmI();
     AccelFSR current_accel_fsr_ = AccelFSR::G_2;

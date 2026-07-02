@@ -220,6 +220,49 @@ void ICM20948::SetGyroAvgRate(GyroAvgRate rate)
     ifs_.WriteReg(GYRO_CONFIG_1, static_cast<uint8_t>(rate));
 }
 
+void ICM20948::SetSynchronizedSampleRate(IcmOdr target_odr)
+{
+    uint16_t gyro_div = 0;
+    uint16_t accel_div = 0;
+
+    // Select dividers that yield the closest matching frequencies
+    switch (target_odr)
+    {
+        case IcmOdr::ODR_220_HZ:
+            gyro_div  = 4;   // 1100 / (1 + 4)  = 220.0 Hz
+            accel_div = 4;   // 1125 / (1 + 4)  = 225.0 Hz
+            break;
+
+        case IcmOdr::ODR_100_HZ:
+            gyro_div  = 10;  // 1100 / (1 + 10) = 100.0 Hz
+            accel_div = 10;  // 1125 / (1 + 10) = 102.2 Hz
+            break;
+
+        case IcmOdr::ODR_50_HZ:
+            gyro_div  = 21;  // 1100 / (1 + 21) = 50.0 Hz
+            accel_div = 21;  // 1125 / (1 + 21) = 51.1 Hz
+            break;
+
+        case IcmOdr::ODR_20_HZ:
+            gyro_div  = 54;  // 1100 / (1 + 54) = 20.0 Hz
+            accel_div = 54;  // 1125 / (1 + 54) = 20.4 Hz
+            break;
+    }
+
+    // Switch to Bank 2 where sample rate registers reside
+    SwitchMemoryBank(2);
+
+    // 1. Write Gyro Sample Rate Divider (1 byte)
+    ifs_.WriteReg(GYRO_SMPLRT_DIV, static_cast<uint8_t>(gyro_div));
+
+    // 2. Write Accel Sample Rate Divider (2 bytes: High then Low)
+    uint8_t accel_div_h = static_cast<uint8_t>((accel_div >> 8) & 0x0F);
+    uint8_t accel_div_l = static_cast<uint8_t>(accel_div & 0xFF);
+
+    ifs_.WriteReg(ACCEL_SMPLRT_DIV_1, accel_div_h);
+    ifs_.WriteReg(ACCEL_SMPLRT_DIV_2, accel_div_l);
+}
+
 ICM20948::RawData ICM20948::WaitForData()
 {
     while (!IsDataReady()) {};
@@ -245,7 +288,12 @@ ICM20948::RawData ICM20948::GetData()
     } data_union;
     #pragma pack(pop)
 
-    ifs_.Read(ACCEL_XOUT_H, data_union.be_buffer, sizeof(data_union.be_buffer)); // Read 14 bytes of sensor data starting from ACCEL_XOUT_H
+	if (isFifoEnabled) {
+		ifs_.Read(FIFO_R_W, data_union.be_buffer, sizeof(data_union.be_buffer)); // Read 12 bytes of sensor data from FIFO
+	} else {
+		ifs_.Read(ACCEL_XOUT_H, data_union.be_buffer,
+				sizeof(data_union.be_buffer)); // Read 14 bytes of sensor data starting from ACCEL_XOUT_H
+	}
 
     ICM20948::RawData data(
         16384.0f / (1 << static_cast<uint8_t>(current_accel_fsr_)), // Accelerometer scale factor based on current FSR
@@ -345,8 +393,11 @@ int ICM20948::Calibrate(int max_iterations, int16_t target_error)
 void ICM20948::ResetFIFO()
 {
     SwitchMemoryBank(0);
+    ifs_.WriteReg(USER_CTRL, ifs_.SPI_IFS_Enabled());
     ifs_.WriteReg(FIFO_RST, 0x1F);
     ifs_.WriteReg(FIFO_RST, 0x00);
+    while (ifs_.ReadReg(FIFO_RST) & 0x1F) {}; // Wait until FIFO reset is complete
+    ifs_.WriteReg(USER_CTRL, BIT(6) | ifs_.SPI_IFS_Enabled());
 }
 
 void ICM20948::SwitchMemoryBank(uint8_t bank)
@@ -404,6 +455,8 @@ void ICM20948::EnableFifo()
     ifs_.WriteReg(USER_CTRL, BIT(6) | ifs_.SPI_IFS_Enabled()); // Enable FIFO operation by setting FIFO_EN (Bit 6) in USER_CTRL
 
     isFifoEnabled = true;
+
+    ResetFIFO();
 }
 
 void ICM20948::DisableFifo()
@@ -428,6 +481,13 @@ int ICM20948::CheckWhoAmI()
     }
 
     return 0; // Device is present and responding correctly
+}
+
+bool ICM20948::IsFifoOverflown()
+{
+    SwitchMemoryBank(0);
+
+    return (ifs_.ReadReg(INT_STATUS_1) & 0x08);
 }
 
 #if 0 // Magnetometer support is currently disabled in this build.

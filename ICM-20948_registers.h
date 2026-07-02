@@ -65,20 +65,23 @@ const uint8_t REG_BANK_SEL   = 0x7F;
 const uint8_t USER_CTRL      = 0x03;
 const uint8_t LP_CONFIG      = 0x05;
 const uint8_t INT_PIN_CFG    = 0x0F;
+const uint8_t INT_ENABLE_1   = 0x11;
 const uint8_t I2C_MST_STATUS = 0x17;
 const uint8_t INT_STATUS     = 0x19;
 const uint8_t INT_STATUS_1   = 0x1A;
-const uint8_t FIFO_EN_1       = 0x66;
-const uint8_t FIFO_EN_2       = 0x67;
+const uint8_t FIFO_EN_1      = 0x66;
+const uint8_t FIFO_EN_2      = 0x67;
 const uint8_t FIFO_RST       = 0x68;
-const uint8_t FIFO_CONFIG     = 0x69;
+const uint8_t FIFO_CONFIG    = 0x69;
 const uint8_t FIFO_COUNTH    = 0x70;
+const uint8_t FIFO_R_W	     = 0x72;
 
 // I2C_MST_STATUS register bits
 const uint8_t I2C_SLV4_DONE  = 0x40; // Bit 6: SLV4 transaction completed
 
 // Sensor data registers (Bank 0)
 const uint8_t ACCEL_XOUT_H = 0x2D; // Starting address for accelerometer, gyroscope, and temperature data (14 bytes total)
+const uint8_t TEMP_OUT_H   = 0x39; // Starting address for temperature data (2 bytes)
 const uint8_t DATA_RDY_STATUS = 0x74; // Data Ready Status register (Bank 0)
 
 // Calibration offset registers (Bank 1)
@@ -87,6 +90,7 @@ const uint8_t ACCEL_Y_OFFSET_H = 0x17;
 const uint8_t ACCEL_Z_OFFSET_H = 0x1A;
 
 // Gyroscope offset registers (Bank 2)
+const uint8_t GYRO_SMPLRT_DIV  = 0x00;
 const uint8_t GYRO_X_OFFSET_H  = 0x03;
 const uint8_t GYRO_X_OFFSET_L  = 0x04;
 const uint8_t GYRO_Y_OFFSET_H  = 0x05;
@@ -94,6 +98,8 @@ const uint8_t GYRO_Y_OFFSET_L  = 0x06;
 const uint8_t GYRO_Z_OFFSET_H  = 0x07;
 const uint8_t GYRO_Z_OFFSET_L  = 0x08;
 const uint8_t ODR_ALIGN_EN     = 0x09;
+const uint8_t ACCEL_SMPLRT_DIV_1 = 0x10;
+const uint8_t ACCEL_SMPLRT_DIV_2 = 0x11;
 
 // User Bank 3 registers
 const uint8_t I2C_MST_CTRL   = 0x01;
