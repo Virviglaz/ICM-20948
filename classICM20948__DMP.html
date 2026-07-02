@@ -129,20 +129,36 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>Reset</b> ()</td></tr>
 <tr class="separator:abcf7d5f8f031de3917e4e3862966e5a7 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90c0405a6b8ac92dd5849547832d9180 inherit pub_methods_classICM20948" id="r_a90c0405a6b8ac92dd5849547832d9180"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a90c0405a6b8ac92dd5849547832d9180">SetGyroAvgRate</a> (GyroAvgRate rate=GyroAvgRate::AVG_1)</td></tr>
 <tr class="separator:a90c0405a6b8ac92dd5849547832d9180 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a752f048f222e1d48f4fdc1b70055b0ca inherit pub_methods_classICM20948" id="r_a752f048f222e1d48f4fdc1b70055b0ca"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetSynchronizedSampleRate</b> (IcmOdr target_odr)</td></tr>
+<tr class="separator:a752f048f222e1d48f4fdc1b70055b0ca inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb1d14c6e7b59819830640848eabd031 inherit pub_methods_classICM20948" id="r_acb1d14c6e7b59819830640848eabd031"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classICM20948_1_1RawData.html">RawData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#acb1d14c6e7b59819830640848eabd031">WaitForData</a> ()</td></tr>
 <tr class="separator:acb1d14c6e7b59819830640848eabd031 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a845fcb74bce9dbc01080868407090a inherit pub_methods_classICM20948" id="r_a9a845fcb74bce9dbc01080868407090a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classICM20948_1_1RawData.html">RawData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a9a845fcb74bce9dbc01080868407090a">GetData</a> ()</td></tr>
+<tr class="memdesc:a9a845fcb74bce9dbc01080868407090a inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for new sensor data to be available and returns the raw data.  <br /></td></tr>
 <tr class="separator:a9a845fcb74bce9dbc01080868407090a inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc20ce346c0528b1a6b08aa7fc6edcf9 inherit pub_methods_classICM20948" id="r_abc20ce346c0528b1a6b08aa7fc6edcf9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#abc20ce346c0528b1a6b08aa7fc6edcf9">Calibrate</a> (int max_iterations=100, int16_t target_error=250)</td></tr>
+<tr class="memdesc:abc20ce346c0528b1a6b08aa7fc6edcf9 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a calibration of the ICM-20948 sensor.  <br /></td></tr>
 <tr class="separator:abc20ce346c0528b1a6b08aa7fc6edcf9 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2ad2afe6afb4e9a00bf9ae275d1f7b0 inherit pub_methods_classICM20948" id="r_ae2ad2afe6afb4e9a00bf9ae275d1f7b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structICM20948_1_1cal__offsets.html">cal_offsets</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#ae2ad2afe6afb4e9a00bf9ae275d1f7b0">ReadCalibrationOffsets</a> ()</td></tr>
+<tr class="memdesc:ae2ad2afe6afb4e9a00bf9ae275d1f7b0 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the current calibration offsets from the ICM-20948 hardware registers and returns them as a <a class="el" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> struct.  <br /></td></tr>
 <tr class="separator:ae2ad2afe6afb4e9a00bf9ae275d1f7b0 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49bcebfe68febe495c121024c764ffa7 inherit pub_methods_classICM20948" id="r_a49bcebfe68febe495c121024c764ffa7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a49bcebfe68febe495c121024c764ffa7">WriteCalibrationOffsets</a> (const <a class="el" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> &amp;offsets)</td></tr>
+<tr class="memdesc:a49bcebfe68febe495c121024c764ffa7 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the provided calibration offsets to the ICM-20948's hardware offset registers.  <br /></td></tr>
 <tr class="separator:a49bcebfe68febe495c121024c764ffa7 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c25c478a0b64c5d177458599ce23d19 inherit pub_methods_classICM20948" id="r_a3c25c478a0b64c5d177458599ce23d19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">EnableFifo</a> ()</td></tr>
+<tr class="memdesc:a3c25c478a0b64c5d177458599ce23d19 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the FIFO buffer on the ICM-20948.  <br /></td></tr>
 <tr class="separator:a3c25c478a0b64c5d177458599ce23d19 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e6ae2948a7035efcbcc25d70946b0e0 inherit pub_methods_classICM20948" id="r_a6e6ae2948a7035efcbcc25d70946b0e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a6e6ae2948a7035efcbcc25d70946b0e0">DisableFifo</a> ()</td></tr>
+<tr class="memdesc:a6e6ae2948a7035efcbcc25d70946b0e0 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the FIFO buffer on the ICM-20948.  <br /></td></tr>
 <tr class="separator:a6e6ae2948a7035efcbcc25d70946b0e0 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cb87a8e2e18314912e89c8b9c839a72 inherit pub_methods_classICM20948" id="r_a3cb87a8e2e18314912e89c8b9c839a72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a3cb87a8e2e18314912e89c8b9c839a72">IsFifoOverflown</a> ()</td></tr>
+<tr class="memdesc:a3cb87a8e2e18314912e89c8b9c839a72 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the FIFO buffer is full.  <br /></td></tr>
+<tr class="separator:a3cb87a8e2e18314912e89c8b9c839a72 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pub_methods_classICM20948" id="r_a0504cc894b10f12fdf8c809d3dd2ded8"><td class="memItemLeft" align="right" valign="top">
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ResetFIFO</b> ()</td></tr>
+<tr class="memdesc:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the FIFO buffer on the ICM-20948. <br /></td></tr>
+<tr class="separator:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -152,9 +168,6 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a92fe46012134f007c305f6e33dd21306 inherit pro_methods_classICM20948" id="r_a92fe46012134f007c305f6e33dd21306"><td class="memItemLeft" align="right" valign="top">
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>FifoCount</b> ()</td></tr>
 <tr class="separator:a92fe46012134f007c305f6e33dd21306 inherit pro_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pro_methods_classICM20948" id="r_a0504cc894b10f12fdf8c809d3dd2ded8"><td class="memItemLeft" align="right" valign="top">
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ResetFIFO</b> ()</td></tr>
-<tr class="separator:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pro_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99105c8200c074f2391a869bc271305d inherit pro_methods_classICM20948" id="r_a99105c8200c074f2391a869bc271305d"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SwitchMemoryBank</b> (uint8_t bank)</td></tr>
 <tr class="separator:a99105c8200c074f2391a869bc271305d inherit pro_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,6 +206,12 @@ Additional Inherited Members</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:abf36dc8f4f8827c1f18cd4085ed8e60c inherit pub_types_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ea1773b381112564193ae045d7f2cdd inherit pub_types_classICM20948" id="r_a7ea1773b381112564193ae045d7f2cdd"><td class="memItemLeft" align="right" valign="top"><a id="a7ea1773b381112564193ae045d7f2cdd" name="a7ea1773b381112564193ae045d7f2cdd"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>IcmOdr</b> { <b>ODR_220_HZ</b>
+, <b>ODR_100_HZ</b>
+, <b>ODR_50_HZ</b>
+, <b>ODR_20_HZ</b>
+ }</td></tr>
+<tr class="separator:a7ea1773b381112564193ae045d7f2cdd inherit pub_types_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classICM20948"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classICM20948')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classICM20948.html">ICM20948</a></td></tr>
 <tr class="memitem:a1ea5680d278f15c91d74cb30ac4647e8 inherit pro_attribs_classICM20948" id="r_a1ea5680d278f15c91d74cb30ac4647e8"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ifs_</b></td></tr>

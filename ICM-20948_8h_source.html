@@ -260,136 +260,149 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
 <div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a90c0405a6b8ac92dd5849547832d9180">SetGyroAvgRate</a>(GyroAvgRate rate = GyroAvgRate::AVG_1);</div>
 <div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
-<div class="foldopen" id="foldopen00249" data-start="{" data-end="};">
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno"><a class="line" href="classICM20948_1_1RawData.html">  249</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a> {</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_class" href="classICM20948.html">ICM20948</a>;</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        <a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a>(<span class="keywordtype">float</span> acc_scale, <span class="keywordtype">float</span> gyro_scale)</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>            : _acc_scale(acc_scale), _gyro_scale(gyro_scale) {}</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>        <span class="keywordtype">float</span> GetAccX() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordtype">float</span> GetAccY() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        <span class="keywordtype">float</span> GetAccZ() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        <span class="keywordtype">float</span> GetGyroX() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        <span class="keywordtype">float</span> GetGyroY() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <span class="keywordtype">float</span> GetGyroZ() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        <span class="keywordtype">float</span> GetTemperature() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        int16_t x; <span class="comment">/* ICM-20948_RA_ACCEL_XOUT H/L */</span></div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        int16_t y; <span class="comment">/* ICM-20948_RA_ACCEL_YOUT H/L */</span></div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        int16_t z; <span class="comment">/* ICM-20948_RA_ACCEL_ZOUT H/L */</span></div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        int16_t ax; <span class="comment">/* ICM-20948_RA_GYRO_XOUT H/L */</span></div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        int16_t ay; <span class="comment">/* ICM-20948_RA_GYRO_YOUT H/L */</span></div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        int16_t az; <span class="comment">/* ICM-20948_RA_GYRO_ZOUT H/L */</span></div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        int16_t temp; <span class="comment">/* ICM-20948_RA_TEMP_OUT H/L */</span></div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        <span class="keywordtype">float</span> _acc_scale, _gyro_scale; <span class="comment">/* Scaling factors for accelerometer and gyroscope */</span></div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    };</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    <span class="keyword">enum class</span> IcmOdr {</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        ODR_220_HZ,  <span class="comment">// Gyro: 220Hz (div 4),  Accel: 225Hz (div 4)</span></div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        ODR_100_HZ,  <span class="comment">// Gyro: 100Hz (div 10), Accel: 102.2Hz (div 10)</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        ODR_50_HZ,   <span class="comment">// Gyro: 50Hz (div 21),  Accel: 51.1Hz (div 21)</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        ODR_20_HZ    <span class="comment">// Gyro: 20Hz (div 54),  Accel: 20.4Hz (div 54)</span></div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    };</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="keywordtype">void</span> SetSynchronizedSampleRate(IcmOdr target_odr);</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
+<div class="foldopen" id="foldopen00258" data-start="{" data-end="};">
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno"><a class="line" href="classICM20948_1_1RawData.html">  258</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a> {</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_class" href="classICM20948.html">ICM20948</a>;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        <a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a>(<span class="keywordtype">float</span> acc_scale, <span class="keywordtype">float</span> gyro_scale)</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>            : _acc_scale(acc_scale), _gyro_scale(gyro_scale) {}</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        <span class="keywordtype">float</span> GetAccX() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        <span class="keywordtype">float</span> GetAccY() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        <span class="keywordtype">float</span> GetAccZ() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        <span class="keywordtype">float</span> GetGyroX() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        <span class="keywordtype">float</span> GetGyroY() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        <span class="keywordtype">float</span> GetGyroZ() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        <span class="keywordtype">float</span> GetTemperature() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        int16_t x; <span class="comment">/* ICM-20948_RA_ACCEL_XOUT H/L */</span></div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        int16_t y; <span class="comment">/* ICM-20948_RA_ACCEL_YOUT H/L */</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>        int16_t z; <span class="comment">/* ICM-20948_RA_ACCEL_ZOUT H/L */</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        int16_t ax; <span class="comment">/* ICM-20948_RA_GYRO_XOUT H/L */</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        int16_t ay; <span class="comment">/* ICM-20948_RA_GYRO_YOUT H/L */</span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        int16_t az; <span class="comment">/* ICM-20948_RA_GYRO_ZOUT H/L */</span></div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>        int16_t temp; <span class="comment">/* ICM-20948_RA_TEMP_OUT H/L */</span></div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        <span class="keywordtype">float</span> _acc_scale, _gyro_scale; <span class="comment">/* Scaling factors for accelerometer and gyroscope */</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    };</div>
 </div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a> <a class="code hl_function" href="classICM20948.html#acb1d14c6e7b59819830640848eabd031">WaitForData</a>();</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span> </div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a> <a class="code hl_function" href="classICM20948.html#a9a845fcb74bce9dbc01080868407090a">GetData</a>();</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classICM20948.html#abc20ce346c0528b1a6b08aa7fc6edcf9">Calibrate</a>(<span class="keywordtype">int</span> max_iterations = 100, int16_t target_error = 250);</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="preprocessor">    #pragma pack(push, 1)</span></div>
-<div class="foldopen" id="foldopen00312" data-start="{" data-end="};">
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno"><a class="line" href="structICM20948_1_1cal__offsets.html">  312</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> {</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        int16_t acc_x_offset = 0;</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        int16_t acc_y_offset = 0;</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>        int16_t acc_z_offset = 0;</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        int16_t gyro_x_offset = 0;</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        int16_t gyro_y_offset = 0;</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        int16_t gyro_z_offset = 0;</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    };</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span> </div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    <a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a> <a class="code hl_function" href="classICM20948.html#acb1d14c6e7b59819830640848eabd031">WaitForData</a>();</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    <a class="code hl_class" href="classICM20948_1_1RawData.html">RawData</a> <a class="code hl_function" href="classICM20948.html#a9a845fcb74bce9dbc01080868407090a">GetData</a>();</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span> </div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classICM20948.html#abc20ce346c0528b1a6b08aa7fc6edcf9">Calibrate</a>(<span class="keywordtype">int</span> max_iterations = 100, int16_t target_error = 250);</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span> </div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="preprocessor">    #pragma pack(push, 1)</span></div>
+<div class="foldopen" id="foldopen00327" data-start="{" data-end="};">
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno"><a class="line" href="structICM20948_1_1cal__offsets.html">  327</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> {</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>        int16_t acc_x_offset = 0;</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        int16_t acc_y_offset = 0;</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>        int16_t acc_z_offset = 0;</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        int16_t gyro_x_offset = 0;</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        int16_t gyro_y_offset = 0;</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        int16_t gyro_z_offset = 0;</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>    };</div>
 </div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="preprocessor">    #pragma pack(pop)</span></div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    <span class="keyword">static_assert</span>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a>) == 12,</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        <span class="stringliteral">&quot;cal_offsets struct must be exactly 12 bytes to match the ICM-20948 offset register layout&quot;</span>);</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    <a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> <a class="code hl_function" href="classICM20948.html#ae2ad2afe6afb4e9a00bf9ae275d1f7b0">ReadCalibrationOffsets</a>();</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a49bcebfe68febe495c121024c764ffa7">WriteCalibrationOffsets</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a>&amp; offsets);</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span> </div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">EnableFifo</a>();</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="preprocessor">    #pragma pack(pop)</span></div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    <span class="keyword">static_assert</span>(<span class="keyword">sizeof</span>(<a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a>) == 12,</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        <span class="stringliteral">&quot;cal_offsets struct must be exactly 12 bytes to match the ICM-20948 offset register layout&quot;</span>);</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span> </div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>    <a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> <a class="code hl_function" href="classICM20948.html#ae2ad2afe6afb4e9a00bf9ae275d1f7b0">ReadCalibrationOffsets</a>();</div>
 <div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a6e6ae2948a7035efcbcc25d70946b0e0">DisableFifo</a>();</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    <a class="code hl_class" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a>&amp; ifs_;</div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span> </div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>    <span class="comment">/* Replace this with a GPIO read implementation if needed */</span></div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> IsDataReady();</div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>    uint16_t FifoCount();</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> ResetFIFO();</div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>    <span class="keywordtype">void</span> SwitchMemoryBank(uint8_t bank);</div>
-<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>    <span class="keywordtype">bool</span> isFifoEnabled = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>    </div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>    <span class="keywordtype">int</span> CheckWhoAmI();</div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>    AccelFSR current_accel_fsr_ = AccelFSR::G_2;</div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>    GyroFSR current_gyro_fsr_ = GyroFSR::DPS_250;</div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>    uint8_t current_bank_ = 10; <span class="comment">// Invalid bank to force initial switch</span></div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>};</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a49bcebfe68febe495c121024c764ffa7">WriteCalibrationOffsets</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structICM20948_1_1cal__offsets.html">cal_offsets</a>&amp; offsets);</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span> </div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">EnableFifo</a>();</div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span> </div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a6e6ae2948a7035efcbcc25d70946b0e0">DisableFifo</a>();</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span> </div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classICM20948.html#a3cb87a8e2e18314912e89c8b9c839a72">IsFifoOverflown</a>();</div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span> </div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classICM20948.html#a0504cc894b10f12fdf8c809d3dd2ded8">ResetFIFO</a>();</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>    <a class="code hl_class" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a>&amp; ifs_;</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span> </div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>    <span class="comment">/* Replace this with a GPIO read implementation if needed */</span></div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> IsDataReady();</div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>    uint16_t FifoCount();</div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>    <span class="keywordtype">void</span> SwitchMemoryBank(uint8_t bank);</div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>    <span class="keywordtype">bool</span> isFifoEnabled = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>    <span class="keywordtype">int</span> CheckWhoAmI();</div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>    AccelFSR current_accel_fsr_ = AccelFSR::G_2;</div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>    GyroFSR current_gyro_fsr_ = GyroFSR::DPS_250;</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>    uint8_t current_bank_ = 10; <span class="comment">// Invalid bank to force initial switch</span></div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>};</div>
 </div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span> </div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span><span class="preprocessor">#if 0 </span><span class="comment">// Magnetometer support is currently disabled in this build.</span></div>
-<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>class ICM20948_MAG : public ICM20948</div>
-<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>{</div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>    <span class="keyword">using </span>ICM20948::ICM20948; <span class="comment">// Inherit constructors from ICM20948</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>    <span class="keywordtype">int</span> Init() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>    <span class="keywordtype">int</span> write_MagnetometerReg(uint8_t reg, uint8_t value);</div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>    <span class="keywordtype">int</span> read_MagnetometerReg(uint8_t reg, uint8_t&amp; out_value);</div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>    <span class="keywordtype">int</span> CheckWhoAmI();</div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>};</div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span><span class="preprocessor">#endif </span><span class="comment">/* MAGNETOMETER_SUPPORT */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span> </div>
-<div class="foldopen" id="foldopen00396" data-start="{" data-end="};">
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno"><a class="line" href="classICM20948__DMP.html">  396</a></span><span class="keyword">class </span><a class="code hl_class" href="classICM20948__DMP.html">ICM20948_DMP</a> : <span class="keyword">public</span> <a class="code hl_class" href="classICM20948.html">ICM20948</a></div>
-<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>{</div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>    <span class="keyword">explicit</span> <a class="code hl_class" href="classICM20948__DMP.html">ICM20948_DMP</a>(<a class="code hl_class" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a>&amp; ifs) : <a class="code hl_class" href="classICM20948.html">ICM20948</a>(ifs) {}</div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span> </div>
-<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classICM20948__DMP.html#ae75c5ec6c7b637638b27d2ae4da55ada">Init</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span> </div>
-<div class="foldopen" id="foldopen00422" data-start="{" data-end="};">
-<div class="line"><a id="l00422" name="l00422"></a><span class="lineno"><a class="line" href="structICM20948__DMP_1_1RealIMUData.html">  422</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structICM20948__DMP_1_1RealIMUData.html">RealIMUData</a></div>
-<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>    {</div>
-<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>        <span class="keywordtype">float</span> roll, pitch, yaw;                <span class="comment">// angles in degrees</span></div>
-<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>        <span class="keywordtype">float</span> gx, gy, gz;                      <span class="comment">// angular velocity in degrees per second</span></div>
-<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>        <span class="keywordtype">float</span> ax_linear, ay_linear, az_linear; <span class="comment">// linear acceleration in m/s²</span></div>
-<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>    };</div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span> </div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span><span class="preprocessor">#if 0 </span><span class="comment">// Magnetometer support is currently disabled in this build.</span></div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>class ICM20948_MAG : public ICM20948</div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>{</div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span>    <span class="keyword">using </span>ICM20948::ICM20948; <span class="comment">// Inherit constructors from ICM20948</span></div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>    <span class="keywordtype">int</span> Init() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>    <span class="keywordtype">int</span> write_MagnetometerReg(uint8_t reg, uint8_t value);</div>
+<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>    <span class="keywordtype">int</span> read_MagnetometerReg(uint8_t reg, uint8_t&amp; out_value);</div>
+<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>    <span class="keywordtype">int</span> CheckWhoAmI();</div>
+<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>};</div>
+<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span><span class="preprocessor">#endif </span><span class="comment">/* MAGNETOMETER_SUPPORT */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span> </div>
+<div class="foldopen" id="foldopen00428" data-start="{" data-end="};">
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno"><a class="line" href="classICM20948__DMP.html">  428</a></span><span class="keyword">class </span><a class="code hl_class" href="classICM20948__DMP.html">ICM20948_DMP</a> : <span class="keyword">public</span> <a class="code hl_class" href="classICM20948.html">ICM20948</a></div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>{</div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>    <span class="keyword">explicit</span> <a class="code hl_class" href="classICM20948__DMP.html">ICM20948_DMP</a>(<a class="code hl_class" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a>&amp; ifs) : <a class="code hl_class" href="classICM20948.html">ICM20948</a>(ifs) {}</div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span> </div>
+<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classICM20948__DMP.html#ae75c5ec6c7b637638b27d2ae4da55ada">Init</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span> </div>
+<div class="foldopen" id="foldopen00454" data-start="{" data-end="};">
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno"><a class="line" href="structICM20948__DMP_1_1RealIMUData.html">  454</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structICM20948__DMP_1_1RealIMUData.html">RealIMUData</a></div>
+<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span>    {</div>
+<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>        <span class="keywordtype">float</span> roll, pitch, yaw;                <span class="comment">// angles in degrees</span></div>
+<div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span>        <span class="keywordtype">float</span> gx, gy, gz;                      <span class="comment">// angular velocity in degrees per second</span></div>
+<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span>        <span class="keywordtype">float</span> ax_linear, ay_linear, az_linear; <span class="comment">// linear acceleration in m/s²</span></div>
+<div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span>    };</div>
 </div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span> </div>
-<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>    <a class="code hl_struct" href="structICM20948__DMP_1_1RealIMUData.html">RealIMUData</a> <a class="code hl_function" href="classICM20948__DMP.html#a4efc4ed3c4fd6721aa80859e1168a11c">GetRealIMUData</a>();</div>
-<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> IsDataReady() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>};</div>
+<div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span> </div>
+<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span>    <a class="code hl_struct" href="structICM20948__DMP_1_1RealIMUData.html">RealIMUData</a> <a class="code hl_function" href="classICM20948__DMP.html#a4efc4ed3c4fd6721aa80859e1168a11c">GetRealIMUData</a>();</div>
+<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> IsDataReady() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00469" name="l00469"></a><span class="lineno">  469</span>};</div>
 </div>
-<div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span> </div>
-<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span> </div>
-<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span><span class="preprocessor">#endif </span><span class="comment">// ICM_20948_H</span></div>
-<div class="ttc" id="aclassICM20948_1_1RawData_html"><div class="ttname"><a href="classICM20948_1_1RawData.html">ICM20948::RawData</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:249</div></div>
-<div class="ttc" id="aclassICM20948__DMP_html"><div class="ttname"><a href="classICM20948__DMP.html">ICM20948_DMP</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:397</div></div>
-<div class="ttc" id="aclassICM20948__DMP_html_a4efc4ed3c4fd6721aa80859e1168a11c"><div class="ttname"><a href="classICM20948__DMP.html#a4efc4ed3c4fd6721aa80859e1168a11c">ICM20948_DMP::GetRealIMUData</a></div><div class="ttdeci">RealIMUData GetRealIMUData()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:705</div></div>
-<div class="ttc" id="aclassICM20948__DMP_html_ae75c5ec6c7b637638b27d2ae4da55ada"><div class="ttname"><a href="classICM20948__DMP.html#ae75c5ec6c7b637638b27d2ae4da55ada">ICM20948_DMP::Init</a></div><div class="ttdeci">int Init() override</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:624</div></div>
+<div class="line"><a id="l00470" name="l00470"></a><span class="lineno">  470</span> </div>
+<div class="line"><a id="l00471" name="l00471"></a><span class="lineno">  471</span> </div>
+<div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span><span class="preprocessor">#endif </span><span class="comment">// ICM_20948_H</span></div>
+<div class="ttc" id="aclassICM20948_1_1RawData_html"><div class="ttname"><a href="classICM20948_1_1RawData.html">ICM20948::RawData</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:258</div></div>
+<div class="ttc" id="aclassICM20948__DMP_html"><div class="ttname"><a href="classICM20948__DMP.html">ICM20948_DMP</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:429</div></div>
+<div class="ttc" id="aclassICM20948__DMP_html_a4efc4ed3c4fd6721aa80859e1168a11c"><div class="ttname"><a href="classICM20948__DMP.html#a4efc4ed3c4fd6721aa80859e1168a11c">ICM20948_DMP::GetRealIMUData</a></div><div class="ttdeci">RealIMUData GetRealIMUData()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:765</div></div>
+<div class="ttc" id="aclassICM20948__DMP_html_ae75c5ec6c7b637638b27d2ae4da55ada"><div class="ttname"><a href="classICM20948__DMP.html#ae75c5ec6c7b637638b27d2ae4da55ada">ICM20948_DMP::Init</a></div><div class="ttdeci">int Init() override</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:684</div></div>
 <div class="ttc" id="aclassICM20948__I2C_html"><div class="ttname"><a href="classICM20948__I2C.html">ICM20948_I2C</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:90</div></div>
 <div class="ttc" id="aclassICM20948__IFS__Base_html"><div class="ttname"><a href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:55</div></div>
 <div class="ttc" id="aclassICM20948__SPI_html"><div class="ttname"><a href="classICM20948__SPI.html">ICM20948_SPI</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:112</div></div>
 <div class="ttc" id="aclassICM20948_html"><div class="ttname"><a href="classICM20948.html">ICM20948</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:148</div></div>
-<div class="ttc" id="aclassICM20948_html_a3c25c478a0b64c5d177458599ce23d19"><div class="ttname"><a href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">ICM20948::EnableFifo</a></div><div class="ttdeci">void EnableFifo()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:394</div></div>
-<div class="ttc" id="aclassICM20948_html_a49bcebfe68febe495c121024c764ffa7"><div class="ttname"><a href="classICM20948.html#a49bcebfe68febe495c121024c764ffa7">ICM20948::WriteCalibrationOffsets</a></div><div class="ttdeci">void WriteCalibrationOffsets(const cal_offsets &amp;offsets)</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:381</div></div>
-<div class="ttc" id="aclassICM20948_html_a6e6ae2948a7035efcbcc25d70946b0e0"><div class="ttname"><a href="classICM20948.html#a6e6ae2948a7035efcbcc25d70946b0e0">ICM20948::DisableFifo</a></div><div class="ttdeci">void DisableFifo()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:409</div></div>
+<div class="ttc" id="aclassICM20948_html_a0504cc894b10f12fdf8c809d3dd2ded8"><div class="ttname"><a href="classICM20948.html#a0504cc894b10f12fdf8c809d3dd2ded8">ICM20948::ResetFIFO</a></div><div class="ttdeci">virtual void ResetFIFO()</div><div class="ttdoc">Reset the FIFO buffer on the ICM-20948.</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:393</div></div>
+<div class="ttc" id="aclassICM20948_html_a3c25c478a0b64c5d177458599ce23d19"><div class="ttname"><a href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">ICM20948::EnableFifo</a></div><div class="ttdeci">void EnableFifo()</div><div class="ttdoc">Enables the FIFO buffer on the ICM-20948.</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:445</div></div>
+<div class="ttc" id="aclassICM20948_html_a3cb87a8e2e18314912e89c8b9c839a72"><div class="ttname"><a href="classICM20948.html#a3cb87a8e2e18314912e89c8b9c839a72">ICM20948::IsFifoOverflown</a></div><div class="ttdeci">bool IsFifoOverflown()</div><div class="ttdoc">Check if the FIFO buffer is full.</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:486</div></div>
+<div class="ttc" id="aclassICM20948_html_a49bcebfe68febe495c121024c764ffa7"><div class="ttname"><a href="classICM20948.html#a49bcebfe68febe495c121024c764ffa7">ICM20948::WriteCalibrationOffsets</a></div><div class="ttdeci">void WriteCalibrationOffsets(const cal_offsets &amp;offsets)</div><div class="ttdoc">Writes the provided calibration offsets to the ICM-20948's hardware offset registers.</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:432</div></div>
+<div class="ttc" id="aclassICM20948_html_a6e6ae2948a7035efcbcc25d70946b0e0"><div class="ttname"><a href="classICM20948.html#a6e6ae2948a7035efcbcc25d70946b0e0">ICM20948::DisableFifo</a></div><div class="ttdeci">void DisableFifo()</div><div class="ttdoc">Disables the FIFO buffer on the ICM-20948.</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:462</div></div>
 <div class="ttc" id="aclassICM20948_html_a90c0405a6b8ac92dd5849547832d9180"><div class="ttname"><a href="classICM20948.html#a90c0405a6b8ac92dd5849547832d9180">ICM20948::SetGyroAvgRate</a></div><div class="ttdeci">void SetGyroAvgRate(GyroAvgRate rate=GyroAvgRate::AVG_1)</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:217</div></div>
-<div class="ttc" id="aclassICM20948_html_a9a845fcb74bce9dbc01080868407090a"><div class="ttname"><a href="classICM20948.html#a9a845fcb74bce9dbc01080868407090a">ICM20948::GetData</a></div><div class="ttdeci">RawData GetData()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:229</div></div>
+<div class="ttc" id="aclassICM20948_html_a9a845fcb74bce9dbc01080868407090a"><div class="ttname"><a href="classICM20948.html#a9a845fcb74bce9dbc01080868407090a">ICM20948::GetData</a></div><div class="ttdeci">RawData GetData()</div><div class="ttdoc">Wait for new sensor data to be available and returns the raw data.</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:272</div></div>
 <div class="ttc" id="aclassICM20948_html_a9b6642d6df356dfce4df0151db3f2196"><div class="ttname"><a href="classICM20948.html#a9b6642d6df356dfce4df0151db3f2196">ICM20948::SetAccelFSR</a></div><div class="ttdeci">void SetAccelFSR(AccelFSR fsr=AccelFSR::G_2)</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:195</div></div>
-<div class="ttc" id="aclassICM20948_html_abc20ce346c0528b1a6b08aa7fc6edcf9"><div class="ttname"><a href="classICM20948.html#abc20ce346c0528b1a6b08aa7fc6edcf9">ICM20948::Calibrate</a></div><div class="ttdeci">int Calibrate(int max_iterations=100, int16_t target_error=250)</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:295</div></div>
+<div class="ttc" id="aclassICM20948_html_abc20ce346c0528b1a6b08aa7fc6edcf9"><div class="ttname"><a href="classICM20948.html#abc20ce346c0528b1a6b08aa7fc6edcf9">ICM20948::Calibrate</a></div><div class="ttdeci">int Calibrate(int max_iterations=100, int16_t target_error=250)</div><div class="ttdoc">Performs a calibration of the ICM-20948 sensor.</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:343</div></div>
 <div class="ttc" id="aclassICM20948_html_abcf7d5f8f031de3917e4e3862966e5a7"><div class="ttname"><a href="classICM20948.html#abcf7d5f8f031de3917e4e3862966e5a7">ICM20948::SetAccelAvgRate</a></div><div class="ttdeci">void SetAccelAvgRate(AccelAvgRate rate=AccelAvgRate::AVG_1)</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:211</div></div>
-<div class="ttc" id="aclassICM20948_html_acb1d14c6e7b59819830640848eabd031"><div class="ttname"><a href="classICM20948.html#acb1d14c6e7b59819830640848eabd031">ICM20948::WaitForData</a></div><div class="ttdeci">RawData WaitForData()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:223</div></div>
-<div class="ttc" id="aclassICM20948_html_ae2ad2afe6afb4e9a00bf9ae275d1f7b0"><div class="ttname"><a href="classICM20948.html#ae2ad2afe6afb4e9a00bf9ae275d1f7b0">ICM20948::ReadCalibrationOffsets</a></div><div class="ttdeci">cal_offsets ReadCalibrationOffsets()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:364</div></div>
+<div class="ttc" id="aclassICM20948_html_acb1d14c6e7b59819830640848eabd031"><div class="ttname"><a href="classICM20948.html#acb1d14c6e7b59819830640848eabd031">ICM20948::WaitForData</a></div><div class="ttdeci">RawData WaitForData()</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:266</div></div>
+<div class="ttc" id="aclassICM20948_html_ae2ad2afe6afb4e9a00bf9ae275d1f7b0"><div class="ttname"><a href="classICM20948.html#ae2ad2afe6afb4e9a00bf9ae275d1f7b0">ICM20948::ReadCalibrationOffsets</a></div><div class="ttdeci">cal_offsets ReadCalibrationOffsets()</div><div class="ttdoc">Reads the current calibration offsets from the ICM-20948 hardware registers and returns them as a cal...</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:415</div></div>
 <div class="ttc" id="aclassICM20948_html_aee83468dbd4b5407badec8348f471af3"><div class="ttname"><a href="classICM20948.html#aee83468dbd4b5407badec8348f471af3">ICM20948::SetGyroFSR</a></div><div class="ttdeci">void SetGyroFSR(GyroFSR fsr=GyroFSR::DPS_250)</div><div class="ttdef"><b>Definition</b> ICM-20948.cpp:203</div></div>
-<div class="ttc" id="astructICM20948_1_1cal__offsets_html"><div class="ttname"><a href="structICM20948_1_1cal__offsets.html">ICM20948::cal_offsets</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:312</div></div>
-<div class="ttc" id="astructICM20948__DMP_1_1RealIMUData_html"><div class="ttname"><a href="structICM20948__DMP_1_1RealIMUData.html">ICM20948_DMP::RealIMUData</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:423</div></div>
+<div class="ttc" id="astructICM20948_1_1cal__offsets_html"><div class="ttname"><a href="structICM20948_1_1cal__offsets.html">ICM20948::cal_offsets</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:327</div></div>
+<div class="ttc" id="astructICM20948__DMP_1_1RealIMUData_html"><div class="ttname"><a href="structICM20948__DMP_1_1RealIMUData.html">ICM20948_DMP::RealIMUData</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:455</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
