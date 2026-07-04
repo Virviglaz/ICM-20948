@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['setaccelavgrate_0',['SetAccelAvgRate',['../classICM20948.html#abcf7d5f8f031de3917e4e3862966e5a7',1,'ICM20948']]],
-  ['setaccelfsr_1',['SetAccelFSR',['../classICM20948.html#a9b6642d6df356dfce4df0151db3f2196',1,'ICM20948']]],
-  ['setgyroavgrate_2',['SetGyroAvgRate',['../classICM20948.html#a90c0405a6b8ac92dd5849547832d9180',1,'ICM20948']]],
-  ['setgyrofsr_3',['SetGyroFSR',['../classICM20948.html#aee83468dbd4b5407badec8348f471af3',1,'ICM20948']]]
+  ['readcalibrationoffsets_0',['ReadCalibrationOffsets',['../classICM20948.html#ae2ad2afe6afb4e9a00bf9ae275d1f7b0',1,'ICM20948']]],
+  ['resetfifo_1',['resetfifo',['../classICM20948.html#a0504cc894b10f12fdf8c809d3dd2ded8',1,'ICM20948::ResetFIFO()'],['../classICM20948__DMP.html#aa50ea928574749851b6decd0966b7fd1',1,'ICM20948_DMP::ResetFIFO()']]]
 ];

@@ -114,6 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae75c5ec6c7b637638b27d2ae4da55ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4efc4ed3c4fd6721aa80859e1168a11c" id="r_a4efc4ed3c4fd6721aa80859e1168a11c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structICM20948__DMP_1_1RealIMUData.html">RealIMUData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948__DMP.html#a4efc4ed3c4fd6721aa80859e1168a11c">GetRealIMUData</a> ()</td></tr>
 <tr class="separator:a4efc4ed3c4fd6721aa80859e1168a11c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29463853b4e36e86d5f22739a59df395" id="r_a29463853b4e36e86d5f22739a59df395"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structICM20948__DMP_1_1RealIMUData.html">RealIMUData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948__DMP.html#a29463853b4e36e86d5f22739a59df395">WaitForRealIMUData</a> ()</td></tr>
+<tr class="memdesc:a29463853b4e36e86d5f22739a59df395"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the raw quaternion data from the DMP FIFO buffer.  <br /></td></tr>
+<tr class="separator:a29463853b4e36e86d5f22739a59df395"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classICM20948"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classICM20948')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classICM20948.html">ICM20948</a></td></tr>
 <tr class="memitem:aa7ecfc444e836195824488cfa091bee7 inherit pub_methods_classICM20948" id="r_aa7ecfc444e836195824488cfa091bee7"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>ICM20948</b> (<a class="el" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a> &amp;ifs)</td></tr>
@@ -146,24 +149,33 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetSynchronizedSample
 <tr class="memitem:a49bcebfe68febe495c121024c764ffa7 inherit pub_methods_classICM20948" id="r_a49bcebfe68febe495c121024c764ffa7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a49bcebfe68febe495c121024c764ffa7">WriteCalibrationOffsets</a> (const <a class="el" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> &amp;offsets)</td></tr>
 <tr class="memdesc:a49bcebfe68febe495c121024c764ffa7 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the provided calibration offsets to the ICM-20948's hardware offset registers.  <br /></td></tr>
 <tr class="separator:a49bcebfe68febe495c121024c764ffa7 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c25c478a0b64c5d177458599ce23d19 inherit pub_methods_classICM20948" id="r_a3c25c478a0b64c5d177458599ce23d19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">EnableFifo</a> ()</td></tr>
-<tr class="memdesc:a3c25c478a0b64c5d177458599ce23d19 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the FIFO buffer on the ICM-20948.  <br /></td></tr>
-<tr class="separator:a3c25c478a0b64c5d177458599ce23d19 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e6ae2948a7035efcbcc25d70946b0e0 inherit pub_methods_classICM20948" id="r_a6e6ae2948a7035efcbcc25d70946b0e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a6e6ae2948a7035efcbcc25d70946b0e0">DisableFifo</a> ()</td></tr>
 <tr class="memdesc:a6e6ae2948a7035efcbcc25d70946b0e0 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the FIFO buffer on the ICM-20948.  <br /></td></tr>
 <tr class="separator:a6e6ae2948a7035efcbcc25d70946b0e0 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cb87a8e2e18314912e89c8b9c839a72 inherit pub_methods_classICM20948" id="r_a3cb87a8e2e18314912e89c8b9c839a72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a3cb87a8e2e18314912e89c8b9c839a72">IsFifoOverflown</a> ()</td></tr>
 <tr class="memdesc:a3cb87a8e2e18314912e89c8b9c839a72 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the FIFO buffer is full.  <br /></td></tr>
 <tr class="separator:a3cb87a8e2e18314912e89c8b9c839a72 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pub_methods_classICM20948" id="r_a0504cc894b10f12fdf8c809d3dd2ded8"><td class="memItemLeft" align="right" valign="top">
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ResetFIFO</b> ()</td></tr>
-<tr class="memdesc:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the FIFO buffer on the ICM-20948. <br /></td></tr>
-<tr class="separator:a0504cc894b10f12fdf8c809d3dd2ded8 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5fd9e074c06b3d863dd320a5005e53f inherit pub_methods_classICM20948" id="r_ad5fd9e074c06b3d863dd320a5005e53f"><td class="memItemLeft" align="right" valign="top">
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>FifoOverflowEventHandler</b> ()</td></tr>
+<tr class="memdesc:ad5fd9e074c06b3d863dd320a5005e53f inherit pub_methods_classICM20948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the FIFO buffer is full more than half. <br /></td></tr>
+<tr class="separator:ad5fd9e074c06b3d863dd320a5005e53f inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58df62462dd50001375060d6a8e51cb7 inherit pub_methods_classICM20948" id="r_a58df62462dd50001375060d6a8e51cb7"><td class="memItemLeft" align="right" valign="top">
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsDataReady</b> ()</td></tr>
+<tr class="separator:a58df62462dd50001375060d6a8e51cb7 inherit pub_methods_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a05ab6adeead6f4c631c139d49552864c" id="r_a05ab6adeead6f4c631c139d49552864c"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948__DMP.html#a05ab6adeead6f4c631c139d49552864c">IsDataReady</a> () override</td></tr>
-<tr class="separator:a05ab6adeead6f4c631c139d49552864c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa50ea928574749851b6decd0966b7fd1" id="r_aa50ea928574749851b6decd0966b7fd1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948__DMP.html#aa50ea928574749851b6decd0966b7fd1">ResetFIFO</a> () override</td></tr>
+<tr class="memdesc:aa50ea928574749851b6decd0966b7fd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the FIFO buffer on the ICM-20948.  <br /></td></tr>
+<tr class="separator:aa50ea928574749851b6decd0966b7fd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68ac974fd981f34cb471a2519169a6f4" id="r_a68ac974fd981f34cb471a2519169a6f4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948__DMP.html#a68ac974fd981f34cb471a2519169a6f4">EnableFifo</a> () override</td></tr>
+<tr class="memdesc:a68ac974fd981f34cb471a2519169a6f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the FIFO buffer on the ICM-20948.  <br /></td></tr>
+<tr class="separator:a68ac974fd981f34cb471a2519169a6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad84bb03ee6033ac5cb163d213bdea97e" id="r_ad84bb03ee6033ac5cb163d213bdea97e"><td class="memItemLeft" align="right" valign="top">virtual uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948__DMP.html#ad84bb03ee6033ac5cb163d213bdea97e">GetPacketSize</a> () const override</td></tr>
+<tr class="separator:ad84bb03ee6033ac5cb163d213bdea97e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a874b75c8561d43d19cda3fa75853cd4b" id="r_a874b75c8561d43d19cda3fa75853cd4b"><td class="memItemLeft" align="right" valign="top"><a id="a874b75c8561d43d19cda3fa75853cd4b" name="a874b75c8561d43d19cda3fa75853cd4b"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsMDPDataReady</b> ()</td></tr>
+<tr class="separator:a874b75c8561d43d19cda3fa75853cd4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classICM20948"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classICM20948')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classICM20948.html">ICM20948</a></td></tr>
 <tr class="memitem:a92fe46012134f007c305f6e33dd21306 inherit pro_methods_classICM20948" id="r_a92fe46012134f007c305f6e33dd21306"><td class="memItemLeft" align="right" valign="top">
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>FifoCount</b> ()</td></tr>
@@ -221,6 +233,63 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
 <tr class="separator:a03209b72c9d274b6c137ced2a8607465 inherit pro_attribs_classICM20948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a68ac974fd981f34cb471a2519169a6f4" name="a68ac974fd981f34cb471a2519169a6f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68ac974fd981f34cb471a2519169a6f4">&#9670;&#160;</a></span>EnableFifo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICM20948_DMP::EnableFifo </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enables the FIFO buffer on the ICM-20948. </p>
+<p>When enabled, sensor data will be stored in the FIFO buffer for later retrieval. This method configures the necessary registers to enable FIFO operation and should be called before attempting to read data from the FIFO. </p>
+
+<p>Reimplemented from <a class="el" href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">ICM20948</a>.</p>
+
+</div>
+</div>
+<a id="ad84bb03ee6033ac5cb163d213bdea97e" name="ad84bb03ee6033ac5cb163d213bdea97e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad84bb03ee6033ac5cb163d213bdea97e">&#9670;&#160;</a></span>GetPacketSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual uint16_t ICM20948_DMP::GetPacketSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classICM20948.html">ICM20948</a>.</p>
+
+</div>
+</div>
 <a id="a4efc4ed3c4fd6721aa80859e1168a11c" name="a4efc4ed3c4fd6721aa80859e1168a11c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4efc4ed3c4fd6721aa80859e1168a11c">&#9670;&#160;</a></span>GetRealIMUData()</h2>
 
@@ -269,8 +338,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
 
 </div>
 </div>
-<a id="a05ab6adeead6f4c631c139d49552864c" name="a05ab6adeead6f4c631c139d49552864c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05ab6adeead6f4c631c139d49552864c">&#9670;&#160;</a></span>IsDataReady()</h2>
+<a id="aa50ea928574749851b6decd0966b7fd1" name="aa50ea928574749851b6decd0966b7fd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa50ea928574749851b6decd0966b7fd1">&#9670;&#160;</a></span>ResetFIFO()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -279,7 +348,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool ICM20948_DMP::IsDataReady </td>
+          <td class="memname">void ICM20948_DMP::ResetFIFO </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -292,7 +361,29 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
 </table>
 </div><div class="memdoc">
 
-<p>Reimplemented from <a class="el" href="classICM20948.html">ICM20948</a>.</p>
+<p>Reset the FIFO buffer on the ICM-20948. </p>
+
+<p>Reimplemented from <a class="el" href="classICM20948.html#a0504cc894b10f12fdf8c809d3dd2ded8">ICM20948</a>.</p>
+
+</div>
+</div>
+<a id="a29463853b4e36e86d5f22739a59df395" name="a29463853b4e36e86d5f22739a59df395"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29463853b4e36e86d5f22739a59df395">&#9670;&#160;</a></span>WaitForRealIMUData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structICM20948__DMP_1_1RealIMUData.html">ICM20948_DMP::RealIMUData</a> ICM20948_DMP::WaitForRealIMUData </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads the raw quaternion data from the DMP FIFO buffer. </p>
+<dl class="section return"><dt>Returns</dt><dd>A struct containing the raw quaternion values (w, x, y, z) as 16-bit signed integers. </dd></dl>
 
 </div>
 </div>

@@ -184,7 +184,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetSynchronizedSample
 <tr class="memitem:a49bcebfe68febe495c121024c764ffa7" id="r_a49bcebfe68febe495c121024c764ffa7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a49bcebfe68febe495c121024c764ffa7">WriteCalibrationOffsets</a> (const <a class="el" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> &amp;offsets)</td></tr>
 <tr class="memdesc:a49bcebfe68febe495c121024c764ffa7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes the provided calibration offsets to the ICM-20948's hardware offset registers.  <br /></td></tr>
 <tr class="separator:a49bcebfe68febe495c121024c764ffa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c25c478a0b64c5d177458599ce23d19" id="r_a3c25c478a0b64c5d177458599ce23d19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">EnableFifo</a> ()</td></tr>
+<tr class="memitem:a3c25c478a0b64c5d177458599ce23d19" id="r_a3c25c478a0b64c5d177458599ce23d19"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a3c25c478a0b64c5d177458599ce23d19">EnableFifo</a> ()</td></tr>
 <tr class="memdesc:a3c25c478a0b64c5d177458599ce23d19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the FIFO buffer on the ICM-20948.  <br /></td></tr>
 <tr class="separator:a3c25c478a0b64c5d177458599ce23d19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e6ae2948a7035efcbcc25d70946b0e0" id="r_a6e6ae2948a7035efcbcc25d70946b0e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a6e6ae2948a7035efcbcc25d70946b0e0">DisableFifo</a> ()</td></tr>
@@ -193,22 +193,28 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>SetSynchronizedSample
 <tr class="memitem:a3cb87a8e2e18314912e89c8b9c839a72" id="r_a3cb87a8e2e18314912e89c8b9c839a72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a3cb87a8e2e18314912e89c8b9c839a72">IsFifoOverflown</a> ()</td></tr>
 <tr class="memdesc:a3cb87a8e2e18314912e89c8b9c839a72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the FIFO buffer is full.  <br /></td></tr>
 <tr class="separator:a3cb87a8e2e18314912e89c8b9c839a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0504cc894b10f12fdf8c809d3dd2ded8" id="r_a0504cc894b10f12fdf8c809d3dd2ded8"><td class="memItemLeft" align="right" valign="top"><a id="a0504cc894b10f12fdf8c809d3dd2ded8" name="a0504cc894b10f12fdf8c809d3dd2ded8"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>ResetFIFO</b> ()</td></tr>
-<tr class="memdesc:a0504cc894b10f12fdf8c809d3dd2ded8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the FIFO buffer on the ICM-20948. <br /></td></tr>
+<tr class="memitem:ad5fd9e074c06b3d863dd320a5005e53f" id="r_ad5fd9e074c06b3d863dd320a5005e53f"><td class="memItemLeft" align="right" valign="top"><a id="ad5fd9e074c06b3d863dd320a5005e53f" name="ad5fd9e074c06b3d863dd320a5005e53f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>FifoOverflowEventHandler</b> ()</td></tr>
+<tr class="memdesc:ad5fd9e074c06b3d863dd320a5005e53f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the FIFO buffer is full more than half. <br /></td></tr>
+<tr class="separator:ad5fd9e074c06b3d863dd320a5005e53f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0504cc894b10f12fdf8c809d3dd2ded8" id="r_a0504cc894b10f12fdf8c809d3dd2ded8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948.html#a0504cc894b10f12fdf8c809d3dd2ded8">ResetFIFO</a> ()</td></tr>
+<tr class="memdesc:a0504cc894b10f12fdf8c809d3dd2ded8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the FIFO buffer on the ICM-20948.  <br /></td></tr>
 <tr class="separator:a0504cc894b10f12fdf8c809d3dd2ded8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
 <tr class="memitem:a58df62462dd50001375060d6a8e51cb7" id="r_a58df62462dd50001375060d6a8e51cb7"><td class="memItemLeft" align="right" valign="top"><a id="a58df62462dd50001375060d6a8e51cb7" name="a58df62462dd50001375060d6a8e51cb7"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsDataReady</b> ()</td></tr>
 <tr class="separator:a58df62462dd50001375060d6a8e51cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
 <tr class="memitem:a92fe46012134f007c305f6e33dd21306" id="r_a92fe46012134f007c305f6e33dd21306"><td class="memItemLeft" align="right" valign="top"><a id="a92fe46012134f007c305f6e33dd21306" name="a92fe46012134f007c305f6e33dd21306"></a>
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>FifoCount</b> ()</td></tr>
 <tr class="separator:a92fe46012134f007c305f6e33dd21306"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99105c8200c074f2391a869bc271305d" id="r_a99105c8200c074f2391a869bc271305d"><td class="memItemLeft" align="right" valign="top"><a id="a99105c8200c074f2391a869bc271305d" name="a99105c8200c074f2391a869bc271305d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SwitchMemoryBank</b> (uint8_t bank)</td></tr>
 <tr class="separator:a99105c8200c074f2391a869bc271305d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6dad09c9bdd5d8d30086b922fd7de28" id="r_ad6dad09c9bdd5d8d30086b922fd7de28"><td class="memItemLeft" align="right" valign="top"><a id="ad6dad09c9bdd5d8d30086b922fd7de28" name="ad6dad09c9bdd5d8d30086b922fd7de28"></a>
+virtual uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetPacketSize</b> () const</td></tr>
+<tr class="separator:ad6dad09c9bdd5d8d30086b922fd7de28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -287,6 +293,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void ICM20948::EnableFifo </td>
@@ -295,10 +304,17 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Enables the FIFO buffer on the ICM-20948. </p>
 <p>When enabled, sensor data will be stored in the FIFO buffer for later retrieval. This method configures the necessary registers to enable FIFO operation and should be called before attempting to read data from the FIFO. </p>
+
+<p>Reimplemented in <a class="el" href="classICM20948__DMP.html#a68ac974fd981f34cb471a2519169a6f4">ICM20948_DMP</a>.</p>
 
 </div>
 </div>
@@ -387,6 +403,35 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
 
 <p>Reads the current calibration offsets from the ICM-20948 hardware registers and returns them as a <a class="el" href="structICM20948_1_1cal__offsets.html">cal_offsets</a> struct. </p>
 <p>The caller can use this method to retrieve the current offsets before starting a calibration process, or to read the offsets after calibration to save them for future use. </p>
+
+</div>
+</div>
+<a id="a0504cc894b10f12fdf8c809d3dd2ded8" name="a0504cc894b10f12fdf8c809d3dd2ded8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0504cc894b10f12fdf8c809d3dd2ded8">&#9670;&#160;</a></span>ResetFIFO()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICM20948::ResetFIFO </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reset the FIFO buffer on the ICM-20948. </p>
+
+<p>Reimplemented in <a class="el" href="classICM20948__DMP.html#aa50ea928574749851b6decd0966b7fd1">ICM20948_DMP</a>.</p>
 
 </div>
 </div>

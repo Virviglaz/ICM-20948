@@ -93,24 +93,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>pitch</b></td></tr>
 <tr class="memitem:a2e5da113b19ed760e4c470152bed49ff" id="r_a2e5da113b19ed760e4c470152bed49ff"><td class="memItemLeft" align="right" valign="top"><a id="a2e5da113b19ed760e4c470152bed49ff" name="a2e5da113b19ed760e4c470152bed49ff"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>yaw</b></td></tr>
 <tr class="separator:a2e5da113b19ed760e4c470152bed49ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a776207b7b55799b0080a9bff48920975" id="r_a776207b7b55799b0080a9bff48920975"><td class="memItemLeft" align="right" valign="top"><a id="a776207b7b55799b0080a9bff48920975" name="a776207b7b55799b0080a9bff48920975"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>gx</b></td></tr>
-<tr class="separator:a776207b7b55799b0080a9bff48920975"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a839f71e5d175efda95216b6d317d60d9" id="r_a839f71e5d175efda95216b6d317d60d9"><td class="memItemLeft" align="right" valign="top"><a id="a839f71e5d175efda95216b6d317d60d9" name="a839f71e5d175efda95216b6d317d60d9"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>gy</b></td></tr>
-<tr class="separator:a839f71e5d175efda95216b6d317d60d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d36c5090f18e55b107c947f924569f1" id="r_a2d36c5090f18e55b107c947f924569f1"><td class="memItemLeft" align="right" valign="top"><a id="a2d36c5090f18e55b107c947f924569f1" name="a2d36c5090f18e55b107c947f924569f1"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>gz</b></td></tr>
-<tr class="separator:a2d36c5090f18e55b107c947f924569f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac43665d3a8419eb6b938dc9e47c89baf" id="r_ac43665d3a8419eb6b938dc9e47c89baf"><td class="memItemLeft" align="right" valign="top"><a id="ac43665d3a8419eb6b938dc9e47c89baf" name="ac43665d3a8419eb6b938dc9e47c89baf"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>ax_linear</b></td></tr>
-<tr class="separator:ac43665d3a8419eb6b938dc9e47c89baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33607a5764e8b600d75feff9a481d4b0" id="r_a33607a5764e8b600d75feff9a481d4b0"><td class="memItemLeft" align="right" valign="top"><a id="a33607a5764e8b600d75feff9a481d4b0" name="a33607a5764e8b600d75feff9a481d4b0"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>ay_linear</b></td></tr>
-<tr class="separator:a33607a5764e8b600d75feff9a481d4b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6de8d6680043fd1e7a83af3f00fc0d7" id="r_ab6de8d6680043fd1e7a83af3f00fc0d7"><td class="memItemLeft" align="right" valign="top"><a id="ab6de8d6680043fd1e7a83af3f00fc0d7" name="ab6de8d6680043fd1e7a83af3f00fc0d7"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>az_linear</b></td></tr>
-<tr class="separator:ab6de8d6680043fd1e7a83af3f00fc0d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Struct to hold the real-world IMU data obtained from the DMP. This includes roll, pitch, and yaw angles in degrees, angular velocity (gx, gy, gz) in degrees per second, and linear acceleration (ax_linear, ay_linear, az_linear) in m/s². The <a class="el" href="classICM20948__DMP.html#a4efc4ed3c4fd6721aa80859e1168a11c">GetRealIMUData()</a> method reads raw DMP data from the FIFO buffer, converts it to real-world units, and returns it as a <a class="el" href="structICM20948__DMP_1_1RealIMUData.html">RealIMUData</a> struct. The conversion includes normalizing quaternions, calculating Euler angles, converting gyro data to degrees per second, and calculating linear acceleration by removing the gravity component. </p>

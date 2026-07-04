@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['getdata_0',['GetData',['../classICM20948.html#a9a845fcb74bce9dbc01080868407090a',1,'ICM20948']]],
-  ['getrealimudata_1',['GetRealIMUData',['../classICM20948__DMP.html#a4efc4ed3c4fd6721aa80859e1168a11c',1,'ICM20948_DMP']]]
+  ['fifooverfloweventhandler_0',['FifoOverflowEventHandler',['../classICM20948.html#ad5fd9e074c06b3d863dd320a5005e53f',1,'ICM20948']]]
 ];

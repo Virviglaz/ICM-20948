@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['readcalibrationoffsets_0',['ReadCalibrationOffsets',['../classICM20948.html#ae2ad2afe6afb4e9a00bf9ae275d1f7b0',1,'ICM20948']]],
-  ['resetfifo_1',['ResetFIFO',['../classICM20948.html#a0504cc894b10f12fdf8c809d3dd2ded8',1,'ICM20948']]]
+  ['init_0',['Init',['../classICM20948__DMP.html#ae75c5ec6c7b637638b27d2ae4da55ada',1,'ICM20948_DMP']]],
+  ['isfifooverflown_1',['IsFifoOverflown',['../classICM20948.html#a3cb87a8e2e18314912e89c8b9c839a72',1,'ICM20948']]]
 ];
