@@ -258,7 +258,6 @@ public:
     class RawData {
         friend class ICM20948;
     public:
-        RawData() = default;
         RawData(float acc_scale, float gyro_scale)
             : _acc_scale(acc_scale), _gyro_scale(gyro_scale) {}
         float GetAccX() const;
@@ -296,7 +295,7 @@ public:
      * This method reads the raw accelerometer, gyroscope, and temperature data from the ICM-20948 and returns it as a RawData
      * struct. The raw values are in big-endian format and are converted to native endianness before being returned.
      */
-    virtual RawData GetData();
+    RawData GetData();
 
     /**
      * @brief Performs a calibration of the ICM-20948 sensor.
@@ -365,7 +364,7 @@ public:
      * When enabled, sensor data will be stored in the FIFO buffer for later retrieval.
      * This method configures the necessary registers to enable FIFO operation and should be called before attempting to read data from the FIFO.
      */
-    void EnableFifo();
+    virtual void EnableFifo();
 
     /**
      * @brief Disables the FIFO buffer on the ICM-20948.
@@ -383,17 +382,25 @@ public:
     bool IsFifoOverflown();
 
     /**
+     * @brief Called when the FIFO buffer is full more than half.
+     */
+    virtual void FifoOverflowEventHandler() {}
+
+    /**
 	 * @brief Reset the FIFO buffer on the ICM-20948.
 	 */
     virtual void ResetFIFO();
-protected:
-    ICM20948_IFS_Base& ifs_;
 
     /* Replace this with a GPIO read implementation if needed */
     virtual bool IsDataReady();
+protected:
+    ICM20948_IFS_Base& ifs_;
+
     uint16_t FifoCount();
     void SwitchMemoryBank(uint8_t bank);
     bool isFifoEnabled = false;
+
+    virtual uint16_t GetPacketSize() const { return 14; } /* 6 bytes accel + 6 bytes gyro + 2 bytes temp */
 private:
     int CheckWhoAmI();
     AccelFSR current_accel_fsr_ = AccelFSR::G_2;
@@ -442,18 +449,6 @@ public:
     int Init() override;
 
     /**
-     * @brief Reads raw data from FIFO discarding the DMP data.
-     *
-     * This method reads the raw accelerometer, gyroscope,
-     * and temperature data from the ICM-20948's FIFO buffer,
-     * discarding any DMP data that may be present.
-     * It returns the latest raw sensor data as a RawData struct.
-     *
-     * @return The latest raw sensor data as a RawData struct.
-     */
-    RawData GetData() override;
-
-    /**
      * Struct to hold the real-world IMU data obtained from the DMP.
      * This includes roll, pitch, and yaw angles in degrees,
      * angular velocity (gx, gy, gz) in degrees per second,
@@ -466,10 +461,7 @@ public:
      */
     struct RealIMUData
     {
-    	ICM20948::RawData raw_data; ///< The raw sensor data from the ICM-20948.
         float roll, pitch, yaw;                // angles in degrees
-        float gx, gy, gz;                      // angular velocity in degrees per second
-        float ax_linear, ay_linear, az_linear; // linear acceleration in m/s²
     };
 
     /**
@@ -478,8 +470,18 @@ public:
      * @return A RealIMUData struct containing roll, pitch, yaw, angular velocity, and linear acceleration.
      */
     RealIMUData GetRealIMUData();
+
+    /**
+     * @brief Reads the raw quaternion data from the DMP FIFO buffer.
+     *
+     * @return A struct containing the raw quaternion values (w, x, y, z) as 16-bit signed integers.
+     */
+    RealIMUData WaitForRealIMUData();
 protected:
-    virtual bool IsDataReady() override;
+    virtual void ResetFIFO() override;
+    virtual void EnableFifo() override;
+    virtual uint16_t GetPacketSize() const override { return 16; }
+    virtual bool IsMDPDataReady();
 };
 
 

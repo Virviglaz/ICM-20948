@@ -188,6 +188,7 @@ int ICM20948::Init()
     SwitchMemoryBank(0);
     ifs_.WriteReg(PWR_MGMT_1, 0x01); // PWR_MGMT_1 register, clear SLEEP bit to wake up the device
     ifs_.WriteReg(PWR_MGMT_2, 0x00); // PWR_MGMT_2 register, enable all sensors
+    ifs_.WriteReg(INT_ENABLE_1, 0x01);
 
     return 0;
 }
@@ -310,20 +311,21 @@ ICM20948::RawData ICM20948::GetData()
 
     return data;
 }
-#include <cstdio>
+
 uint16_t ICM20948::FifoCount()
 {
     SwitchMemoryBank(0); // Ensure we are in Bank 0 to read FIFO count registers
-    //return static_cast<uint16_t>(ifs_.ReadReg_s16(FIFO_COUNTH));
     auto fifo_count = ifs_.ReadReg_s16(FIFO_COUNTH); // Read FIFO count as signed 16-bit integer
-    printf("FIFO Count: %d\n", fifo_count); // Debug print of FIFO count
+    if (fifo_count > 512)
+    	FifoOverflowEventHandler(); // Handle FIFO overflow if count exceeds 512 bytes
+
     return static_cast<uint16_t>(fifo_count); // Return FIFO count as unsigned 16-bit integer
 }
 
 bool ICM20948::IsDataReady()
 {
     if (isFifoEnabled) {
-        return FifoCount() >= 14; // Check if FIFO has at least 14 bytes of data (6 bytes for Accel + 6 bytes for Gyro + 2 bytes for Temp)
+        return FifoCount() >= GetPacketSize(); // Check if FIFO has at least 14 bytes of data (6 bytes for Accel + 6 bytes for Gyro + 2 bytes for Temp)
     }
 
     SwitchMemoryBank(0);
@@ -397,9 +399,9 @@ void ICM20948::ResetFIFO()
 {
     SwitchMemoryBank(0);
     ifs_.WriteReg(USER_CTRL, ifs_.SPI_IFS_Enabled());
-    ifs_.WriteReg(FIFO_RST, 0x1F);
+    ifs_.WriteReg(FIFO_RST, BIT(3)); // Reset FIFO
     ifs_.WriteReg(FIFO_RST, 0x00);
-    while (ifs_.ReadReg(FIFO_RST) & 0x1F) {}; // Wait until FIFO reset is complete
+    while (ifs_.ReadReg(FIFO_RST) & BIT(3)) {}; // Wait until FIFO reset is complete
     ifs_.WriteReg(USER_CTRL, BIT(6) | ifs_.SPI_IFS_Enabled());
 }
 
@@ -692,7 +694,14 @@ int ICM20948_DMP::Init()
         return res; 
     }
 
-    EnableFifo(); // Enable FIFO for DMP data streaming, also prevents re-enabling FIFO without DMP initialization.
+    DisableFifo(); // Ensure FIFO is disabled before configuring DMP
+
+    // The DMP formats and pushes its own packets into the FIFO. The autonomous
+    // raw-sensor-to-FIFO path (FIFO_EN_1/FIFO_EN_2) must be disabled, otherwise
+    // raw register bytes get interleaved with DMP packets and corrupt the stream.
+    SwitchMemoryBank(0);
+    ifs_.WriteReg(FIFO_EN_1, 0x00);
+    ifs_.WriteReg(FIFO_EN_2, 0x00);
 
     const uint8_t firmware_data[] = {
         #include "ICM-20948-dmp_img.h"
@@ -702,9 +711,9 @@ int ICM20948_DMP::Init()
     const uint32_t I2C_BURST_SIZE = 16;
 
     // Hardware registers for DMP memory interaction (All inside User Bank 0)
-    const uint8_t REG_MEM_BANK_SEL   = 0x7C;
-    const uint8_t REG_MEM_START_ADDR = 0x7D;
-    const uint8_t REG_MEM_R_W        = 0x7E;
+    const uint8_t REG_MEM_BANK_SEL   = 0x7E;
+    const uint8_t REG_MEM_START_ADDR = 0x7C;
+    const uint8_t REG_MEM_R_W        = 0x7D;
 
     // Ensure we are operating in User Bank 0 for the entire download process
     SwitchMemoryBank(0);
@@ -738,39 +747,43 @@ int ICM20948_DMP::Init()
         return -EFAULT; 
     }
 
-    /* --- 2. DMP Configuration for 6-Axis Quaternion Output (Must be done BEFORE boot!) --- */
-    // Based on the provided InvenSense firmware mapping table:
-    // Game Rotation Vector = 0x0808 (Data Output Control 1 register)
-    ifs_.WriteReg(REG_MEM_BANK_SEL, 0x0A);
-    ifs_.WriteReg(REG_MEM_START_ADDR, 0x10);
-    ifs_.WriteReg(REG_MEM_R_W, 0x08); // High Byte
-    ifs_.WriteReg(REG_MEM_R_W, 0x08); // Low Byte (0x08 enabled header according to the mapping table)
+    /* --- 2. DMP Configuration for 6-Axis Quaternion Output (Must be done BEFORE boot!) ---
+     * DMP memory offsets are encoded as (bank << 8) | addr, where bank is the
+     * high byte written to REG_MEM_BANK_SEL and addr is the low byte written to
+     * REG_MEM_START_ADDR. Using the InvenSense DMP memory map:
+     *   DATA_OUT_CTL1 = (4  * 16 + 0)  = 0x0040  -> bank 0x00, addr 0x40
+     *   ODR_QUAT6     = (11 * 16 + 12) = 0x00BC  -> bank 0x00, addr 0xBC
+     * The previous bank/addr values (0x0A/0x10 and 0x00/0x60) pointed at the
+     * wrong DMP memory location, so the DMP was never told to output Game
+     * Rotation Vector data, and the FIFO stayed empty.
+     */
+    ifs_.WriteReg(REG_MEM_START_ADDR, 0x40);
+    ifs_.WriteReg(REG_MEM_R_W, 0x00); // High Byte (0x40) -> 0x00
+    ifs_.WriteReg(REG_MEM_R_W, 0x08); // Low Byte  (0x41) -> 0x08 (Game Rot)
 
     // Configure DMP output data rate divider (0x01 divider = ~112 Hz output frequency)
-    ifs_.WriteReg(REG_MEM_BANK_SEL, 0x00);
-    ifs_.WriteReg(REG_MEM_START_ADDR, 0x60);
+    ifs_.WriteReg(REG_MEM_START_ADDR, 0xBC); // ODR_QUAT6
     ifs_.WriteReg(REG_MEM_R_W, 0x00); // High Byte
     ifs_.WriteReg(REG_MEM_R_W, 0x01); // Low Byte
 
-    // 3. Set DMP Program Start Address execution vector (Typically 0x0400 for standard image)
-    ifs_.WriteReg(0x7A, 0x04);
+    // 3. Set DMP Program Start Address execution vector.
+    ifs_.WriteReg(0x7A, 0x10);
     ifs_.WriteReg(0x7B, 0x00);
 
     // 4. Final step: Boot up the DMP and enable FIFO data streaming
-    ifs_.WriteReg(USER_CTRL, BIT(7) | BIT(6) | ifs_.SPI_IFS_Enabled()); 
+    ifs_.WriteReg(USER_CTRL, BIT(7) | BIT(6) | ifs_.SPI_IFS_Enabled());
 
-    return 0; 
-}
+    EnableFifo(); // Start pushing DMP packets into the FIFO
 
-ICM20948::RawData ICM20948_DMP::GetData()
-{
-	return GetRealIMUData().raw_data;
+    // 5. Reset the FIFO once more now that the DMP is fully configured and
+    // booted, to discard any stray bytes accumulated during firmware upload.
+    ResetFIFO();
+
+    return 0;
 }
 
 ICM20948_DMP::RealIMUData ICM20948_DMP::GetRealIMUData()
 {
-    WaitForData(); // Ensure that new DMP data is available before reading
-
     RealIMUData output = {};
 #pragma pack(push, 1)
     struct DMP_QuatPacket
@@ -778,7 +791,7 @@ ICM20948_DMP::RealIMUData ICM20948_DMP::GetRealIMUData()
         int32_t x;
         int32_t y;
         int32_t z;
-        int32_t dummy;
+        int32_t w; // ИСПРАВЛЕНО: Это не dummy, это реальный W от DMP
     };
 #pragma pack(pop)
     static_assert(sizeof(DMP_QuatPacket) == 16, "DMP_QuatPacket must be exactly 16 bytes to match the DMP output format");
@@ -789,47 +802,75 @@ ICM20948_DMP::RealIMUData ICM20948_DMP::GetRealIMUData()
     };
 
     DMP_QuatPacket raw_packet;
-    ifs_.Read(0x72, reinterpret_cast<uint8_t *>(&raw_packet), 16);
+
+    ifs_.Read(0x72, reinterpret_cast<uint8_t *>(&raw_packet), GetPacketSize());
 
     int32_t qx = BigEndianToNative(raw_packet.x);
     int32_t qy = BigEndianToNative(raw_packet.y);
     int32_t qz = BigEndianToNative(raw_packet.z);
+    int32_t qw = BigEndianToNative(raw_packet.w);
 
-    const float q_scale = 1073741824.0f;
+    const float q_scale = 1073741824.0f; // 2^30
     Quaternion out_quat;
     out_quat.x = static_cast<float>(qx) / q_scale;
     out_quat.y = static_cast<float>(qy) / q_scale;
     out_quat.z = static_cast<float>(qz) / q_scale;
+    out_quat.w = static_cast<float>(qw) / q_scale;
 
-    float mag_squared = 1.0f - (out_quat.x * out_quat.x + out_quat.y * out_quat.y + out_quat.z * out_quat.z);
-    out_quat.w = mag_squared > 0.0f ? std::sqrt(mag_squared) : 1.0f;
+    float norm = std::sqrt(out_quat.w * out_quat.w + out_quat.x * out_quat.x +
+                           out_quat.y * out_quat.y + out_quat.z * out_quat.z);
+    if (norm > 0.0f) {
+        out_quat.w /= norm;
+        out_quat.x /= norm;
+        out_quat.y /= norm;
+        out_quat.z /= norm;
+    }
 
+    // Roll
     output.roll = std::atan2(2.0f * (out_quat.w * out_quat.x + out_quat.y * out_quat.z),
                              1.0f - 2.0f * (out_quat.x * out_quat.x + out_quat.y * out_quat.y));
 
-    // FIX: Protect asin() from values outside [-1.0f, 1.0f] to completely eliminate NaN errors
+    // Pitch
     float pitch_val = 2.0f * (out_quat.w * out_quat.y - out_quat.z * out_quat.x);
     output.pitch = std::asin(std::clamp(pitch_val, -1.0f, 1.0f));
 
+    // Yaw
     output.yaw = std::atan2(2.0f * (out_quat.w * out_quat.z + out_quat.x * out_quat.y),
                             1.0f - 2.0f * (out_quat.y * out_quat.y + out_quat.z * out_quat.z));
-
-    RawData raw_sensor = WaitForData();
-
-    // Convert to real physics values using your working conversion logic
-    output.gx = raw_sensor.GetGyroX();
-    output.gy = raw_sensor.GetGyroY();
-    output.gz = raw_sensor.GetGyroZ();
-
-    const float g = 9.80665f;             // Standard gravity in m/s²
-    output.ax_linear = raw_sensor.GetAccX() * g; // Convert g to m/s²
-    output.ay_linear = raw_sensor.GetAccY() * g;
-    output.az_linear = raw_sensor.GetAccZ() * g;
 
     return output;
 }
 
-bool ICM20948_DMP::IsDataReady()
+ICM20948_DMP::RealIMUData ICM20948_DMP::WaitForRealIMUData()
 {
-    return FifoCount() >= 16;
+	while (!IsMDPDataReady()) {}
+	return GetRealIMUData();
+}
+
+void ICM20948_DMP::ResetFIFO()
+{
+    SwitchMemoryBank(0);
+    ifs_.WriteReg(USER_CTRL, ifs_.SPI_IFS_Enabled());
+    ifs_.WriteReg(FIFO_RST, 0x1F); // Reset FIFO
+    ifs_.WriteReg(FIFO_RST, 0x00);
+    while (ifs_.ReadReg(FIFO_RST) & BIT(3)) {}; // Wait until FIFO reset is complete
+    ifs_.WriteReg(USER_CTRL, BIT(7) | BIT(6) | ifs_.SPI_IFS_Enabled());
+}
+
+void ICM20948_DMP::EnableFifo()
+{
+    SwitchMemoryBank(0);
+    ifs_.WriteReg(FIFO_CONFIG, 0x00); // 0x69 = FIFO_CONFIG, set FIFO mode to stop when full (default) and no watermark
+    ifs_.WriteReg(FIFO_EN_1, 0x00); // Do not use external sensor data channels (Aux Slave 0-3) in the FIFO stream
+    ifs_.WriteReg(FIFO_EN_2, BIT(4)); // only ACCEL_FIFO_ENABLE
+    ifs_.WriteReg(USER_CTRL, BIT(7) | BIT(6) | ifs_.SPI_IFS_Enabled()); // Enable FIFO operation by setting FIFO_EN (Bit 6) in USER_CTRL
+
+    isFifoEnabled = false; // Do not use FIFO for RAW data, only for DMP packets
+
+    ResetFIFO();
+}
+
+bool ICM20948_DMP::IsMDPDataReady()
+{
+	return FifoCount() >= GetPacketSize();
 }
