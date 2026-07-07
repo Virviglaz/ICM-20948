@@ -107,6 +107,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structICM20948_1_1cal__offsets.html">cal_offsets</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classICM20948_1_1RawData.html">RawData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Holds raw accelerometer and gyroscope data from the sensor.  <a href="classICM20948_1_1RawData.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -226,7 +227,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
 <tr class="separator:a03209b72c9d274b6c137ced2a8607465"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classICM20948.html">ICM20948</a> class provides high-level methods to interact with the ICM-20948 sensor, including initialization, data reading, and calibration. It uses an <a class="el" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a> interface for low-level register access, allowing it to work with different communication interfaces (I2C, SPI, etc.) through derived classes like <a class="el" href="classICM20948__I2C.html">ICM20948_I2C</a> and <a class="el" href="classICM20948__SPI.html">ICM20948_SPI</a>. The class includes methods to set the accelerometer and gyroscope full scale ranges, read raw sensor data, and perform sensor calibration by adjusting hardware offset registers iteratively to minimize sensor errors. The <a class="el" href="classICM20948_1_1RawData.html">RawData</a> struct encapsulates the raw sensor readings and provides methods to convert them to real-world units based on the current gain settings.</p>
+<div class="textblock"><p><a class="el" href="classICM20948.html">ICM20948</a> class provides high-level methods to interact with the ICM-20948 sensor, including initialization, data reading, and calibration. It uses an <a class="el" href="classICM20948__IFS__Base.html">ICM20948_IFS_Base</a> interface for low-level register access, allowing it to work with different communication interfaces (I2C, SPI, etc.) through derived classes like <a class="el" href="classICM20948__I2C.html">ICM20948_I2C</a> and <a class="el" href="classICM20948__SPI.html">ICM20948_SPI</a>. The class includes methods to set the accelerometer and gyroscope full scale ranges, read raw sensor data, and perform sensor calibration by adjusting hardware offset registers iteratively to minimize sensor errors. The <a class="el" href="classICM20948_1_1RawData.html" title="Holds raw accelerometer and gyroscope data from the sensor.">RawData</a> struct encapsulates the raw sensor readings and provides methods to convert them to real-world units based on the current gain settings.</p>
 <dl class="section note"><dt>Note</dt><dd>This class provides a basic implementation for the ICM-20948 sensor. </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="abc20ce346c0528b1a6b08aa7fc6edcf9" name="abc20ce346c0528b1a6b08aa7fc6edcf9"></a>
@@ -335,7 +336,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFifoEnabled</b> = f
 
 <p>Wait for new sensor data to be available and returns the raw data. </p>
 <dl class="section note"><dt>Note</dt><dd>This method will block until new data is ready.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>the latest raw sensor data without waiting. The caller should ensure that new data is available before calling this method, either by using EnableDataReadyInterrupt() and checking IsDataReady(), or by implementing their own timing mechanism. This method reads the raw accelerometer, gyroscope, and temperature data from the ICM-20948 and returns it as a <a class="el" href="classICM20948_1_1RawData.html">RawData</a> struct. The raw values are in big-endian format and are converted to native endianness before being returned. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the latest raw sensor data without waiting. The caller should ensure that new data is available before calling this method, either by using EnableDataReadyInterrupt() and checking IsDataReady(), or by implementing their own timing mechanism. This method reads the raw accelerometer, gyroscope, and temperature data from the ICM-20948 and returns it as a <a class="el" href="classICM20948_1_1RawData.html" title="Holds raw accelerometer and gyroscope data from the sensor.">RawData</a> struct. The raw values are in big-endian format and are converted to native endianness before being returned. </dd></dl>
 
 </div>
 </div>

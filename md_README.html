@@ -78,21 +78,22 @@ ICM-20948 library with DMP support</h1>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Both I2C and SPI interfaces supported</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;ICM-20948.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;i2c.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;spi.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;exception&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;cstdio&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;thread&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;cstring&gt;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">/* I2C interface and device provided by my custom platform-independent implementation */</span></div>
-<div class="line"><span class="keyword">static</span> I2C_Interface i2c_interface;</div>
-<div class="line"><span class="keyword">static</span> I2C_DeviceBase i2c_device(i2c_interface, 0x68);</div>
-<div class="line"><span class="keyword">static</span> <a class="code hl_class" href="classICM20948__I2C.html">ICM20948_I2C</a> icm20948_ifs(i2c_device);</div>
-<div class="line"><span class="keyword">static</span> <a class="code hl_class" href="classICM20948__DMP.html">ICM20948_DMP</a> icm20948(icm20948_ifs);</div>
+<div class="line"><span class="comment">/* SPI interface and device provided by my custom platform-independent implementation */</span></div>
+<div class="line"><span class="keyword">static</span> SPI_Interface spi_interface;</div>
+<div class="line"><span class="keyword">static</span> SPI_DeviceBase spi_device(spi_interface);</div>
+<div class="line"><span class="keyword">static</span> <a class="code hl_class" href="classICM20948__SPI.html">ICM20948_SPI</a> icm20948_spi(spi_device);</div>
+<div class="line"><span class="keyword">static</span> <a class="code hl_class" href="classICM20948__DMP.html">ICM20948_DMP</a> icm20948(icm20948_spi);</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])</div>
 <div class="line">{</div>
-<div class="line">    i2c_interface.Init(argc &gt; 1 ? argv[1] : <span class="stringliteral">&quot;/dev/i2c-0&quot;</span>);</div>
+<div class="line">    spi_interface.Init(argc &gt; 1 ? argv[1] : <span class="stringliteral">&quot;/dev/spidev1.0&quot;</span>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordtype">int</span> res = 0;</div>
 <div class="line">    <span class="keywordflow">try</span> {</div>
@@ -100,38 +101,37 @@ Both I2C and SPI interfaces supported</h2>
 <div class="line">        std::this_thread::sleep_for(std::chrono::milliseconds(100)); <span class="comment">// Wait for 100 ms after reset</span></div>
 <div class="line">        res = icm20948.Init();</div>
 <div class="line">        <span class="keywordflow">if</span> (!res) {</div>
-<div class="line">            icm20948.EnableFifo();</div>
 <div class="line">            icm20948.SetAccelAvgRate(ICM20948::AccelAvgRate::AVG_16); <span class="comment">// Set accelerometer average rate to 16 samples</span></div>
 <div class="line">            icm20948.SetGyroAvgRate(ICM20948::GyroAvgRate::AVG_16);</div>
 <div class="line">            printf(<span class="stringliteral">&quot;ICM-20948 initialized successfully\n&quot;</span>);</div>
 <div class="line">            res = icm20948.Calibrate();</div>
 <div class="line">            printf(<span class="stringliteral">&quot;ICM-20948 calibration %s\n&quot;</span>, res ? <span class="stringliteral">&quot;failed&quot;</span> : <span class="stringliteral">&quot;succeeded&quot;</span>);</div>
+<div class="line">        } <span class="keywordflow">else</span> {</div>
+<div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Failed to initialize ICM-20948: Error code %d (%s)\n&quot;</span>, res, strerror(-res));</div>
+<div class="line">            <span class="keywordflow">return</span> res;</div>
 <div class="line">        }</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">/* Read and print raw sensor data */</span></div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; ++i) {</div>
+<div class="line">            <span class="keyword">auto</span> raw_data = icm20948.WaitForData();</div>
+<div class="line">            printf(<span class="stringliteral">&quot;Accelerometer: ax=%.2f g, ay=%.2f g, az=%.2f g\n&quot;</span>, raw_data.Accel.GetX(), raw_data.Accel.GetY(), raw_data.Accel.GetZ());</div>
+<div class="line">            printf(<span class="stringliteral">&quot;Gyroscope: gx=%.2f °/s, gy=%.2f °/s, gz=%.2f °/s\n&quot;</span>, raw_data.Gyro.GetX(), raw_data.Gyro.GetY(), raw_data.Gyro.GetZ());</div>
+<div class="line">            printf(<span class="stringliteral">&quot;Temperature: %.2f °C\n\n&quot;</span>, raw_data.GetTemperature());</div>
+<div class="line">        }</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">/* Read and print real-world IMU data from DMP */</span></div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; ++i) {</div>
+<div class="line">            <span class="keyword">auto</span> real_data = icm20948.GetRealIMUData();</div>
+<div class="line">            printf(<span class="stringliteral">&quot;Roll: %.2f °, Pitch: %.2f °, Yaw: %.2f °\n&quot;</span>, real_data.GetRollDeg(), real_data.GetPitchDeg(), real_data.GetYawDeg());</div>
+<div class="line">        }</div>
+<div class="line">        <span class="keywordflow">return</span> res;</div>
 <div class="line">    } <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp;e) {</div>
 <div class="line">        fprintf(stderr, <span class="stringliteral">&quot;Failed to initialize ICM-20948: %s\n&quot;</span>, e.what());</div>
 <div class="line">        <span class="keywordflow">return</span> 1;</div>
 <div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">/* Read and print raw sensor data */</span></div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; ++i) {</div>
-<div class="line">        <span class="keyword">auto</span> real_data = icm20948.WaitForData();</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Accelerometer: ax=%.2f g, ay=%.2f g, az=%.2f g\n&quot;</span>, real_data.GetAccX(), real_data.GetAccY(), real_data.GetAccZ());</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Gyroscope: gx=%.2f °/s, gy=%.2f °/s, gz=%.2f °/s\n&quot;</span>, real_data.GetGyroX(), real_data.GetGyroY(), real_data.GetGyroZ());</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Temperature: %.2f °C\n\n&quot;</span>, real_data.GetTemperature());</div>
-<div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">/* Read and print real-world IMU data from DMP */</span></div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; 10; ++i) {</div>
-<div class="line">        <span class="keyword">auto</span> real_data = icm20948.GetRealIMUData();</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Roll: %.2f°, Pitch: %.2f°, Yaw: %.2f°\n&quot;</span>, real_data.roll, real_data.pitch, real_data.yaw);</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Gyro: gx=%.2f °/s, gy=%.2f °/s, gz=%.2f °/s\n&quot;</span>, real_data.gx, real_data.gy, real_data.gz);</div>
-<div class="line">        printf(<span class="stringliteral">&quot;Linear Acceleration: ax=%.2f m/s², ay=%.2f m/s², az=%.2f m/s²\n\n&quot;</span>, real_data.ax_linear, real_data.ay_linear, real_data.az_linear);</div>
-<div class="line">        std::this_thread::sleep_for(std::chrono::milliseconds(100)); <span class="comment">// Sleep to simulate a 10 Hz update rate</span></div>
-<div class="line">    }</div>
-<div class="line">    <span class="keywordflow">return</span> res;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassICM20948__DMP_html"><div class="ttname"><a href="classICM20948__DMP.html">ICM20948_DMP</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:437</div></div>
-<div class="ttc" id="aclassICM20948__I2C_html"><div class="ttname"><a href="classICM20948__I2C.html">ICM20948_I2C</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:90</div></div>
+<div class="ttc" id="aclassICM20948__DMP_html"><div class="ttname"><a href="classICM20948__DMP.html">ICM20948_DMP</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:419</div></div>
+<div class="ttc" id="aclassICM20948__SPI_html"><div class="ttname"><a href="classICM20948__SPI.html">ICM20948_SPI</a></div><div class="ttdef"><b>Definition</b> ICM-20948.h:113</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
 Output:</h1>
 <div class="fragment"><div class="line">Accelerometer: ax=-0.01 g, ay=-0.00 g, az=-0.01 g</div>
