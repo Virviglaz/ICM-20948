@@ -51,7 +51,7 @@
 #include <array>
 #include <algorithm>
 
-#define I2C_IFS_BUS_TIMEOUT_CYCLES 50000
+#define IFS_BUS_TIMEOUT_CYCLES 50000
 #ifndef BIT
 #define BIT(n) (1U << (n))
 #endif
@@ -153,10 +153,6 @@ void ICM20948_SPI::Read(const uint8_t *reg_addr,
 /******************************** ICM20948 *******************************/
 int ICM20948::Reset()
 {
-    if (int res = CheckWhoAmI()) {
-        return res; // Error handling: Device not found or not responding correctly
-    }
-
     // 1. Ensure we are in Bank 0 to access power management registers
     SwitchMemoryBank(0);
     
@@ -165,7 +161,7 @@ int ICM20948::Reset()
     
     // 3. Poll until the chip clears the DEVICE_RESET bit back to 0
     // This confirms that the internal register map reset sequence is finished
-    uint32_t reset_timeout = I2C_IFS_BUS_TIMEOUT_CYCLES;
+    uint32_t reset_timeout = IFS_BUS_TIMEOUT_CYCLES;
     while (ifs_.ReadReg(PWR_MGMT_1) & BIT_DEVICE_RESET) {
         if (--reset_timeout == 0) {
             return -ETIMEDOUT; // Error: Chip reset timed out (hardware failure)
@@ -296,20 +292,19 @@ ICM20948::RawData ICM20948::GetData()
 				sizeof(data_union.be_buffer)); // Read 14 bytes of sensor data starting from ACCEL_XOUT_H
 	}
 
-    ICM20948::RawData data(
-        16384.0f / (1 << static_cast<uint8_t>(current_accel_fsr_)), // Accelerometer scale factor based on current FSR
-        131.0f / (1 << static_cast<uint8_t>(current_gyro_fsr_))     // Gyroscope scale factor based on current FSR
-    );
-
-    data.x    = BigEndianToNative(data_union.data_struct.x);
-    data.y    = BigEndianToNative(data_union.data_struct.y);
-    data.z    = BigEndianToNative(data_union.data_struct.z);
-    data.ax   = BigEndianToNative(data_union.data_struct.ax);
-    data.ay   = BigEndianToNative(data_union.data_struct.ay);
-    data.az   = BigEndianToNative(data_union.data_struct.az);
-    data.temp = BigEndianToNative(data_union.data_struct.temp);
-
-    return data;
+    return ICM20948::RawData(
+    		IMU::RawData16_XYZ( // acceleration data
+    				BigEndianToNative(data_union.data_struct.x),
+    				BigEndianToNative(data_union.data_struct.y),
+					BigEndianToNative(data_union.data_struct.z),
+					static_cast<float>(16384.0f / (1 << static_cast<uint8_t>(current_accel_fsr_)))),
+			IMU::RawData16_XYZ( // gyroscope data
+					BigEndianToNative(data_union.data_struct.ax),
+					BigEndianToNative(data_union.data_struct.ay),
+					BigEndianToNative(data_union.data_struct.az),
+					static_cast<float>(131.0f / (1 << static_cast<uint8_t>(current_gyro_fsr_)))),
+			static_cast<float>(BigEndianToNative(data_union.data_struct.temp))
+	);
 }
 
 uint16_t ICM20948::FifoCount()
@@ -332,15 +327,6 @@ bool ICM20948::IsDataReady()
     return ifs_.ReadReg(INT_STATUS_1) & 0x01; // Check if the Data Ready bit (Bit 0) in the INT_STATUS register is set
 }
 
-/* Convert to real data */
-float ICM20948::RawData::GetAccX() const { return static_cast<float>(x) / _acc_scale; }
-float ICM20948::RawData::GetAccY() const { return static_cast<float>(y) / _acc_scale; }
-float ICM20948::RawData::GetAccZ() const { return static_cast<float>(z) / _acc_scale; }
-float ICM20948::RawData::GetGyroX() const { return static_cast<float>(ax) / _gyro_scale; }
-float ICM20948::RawData::GetGyroY() const { return static_cast<float>(ay) / _gyro_scale; }
-float ICM20948::RawData::GetGyroZ() const { return static_cast<float>(az) / _gyro_scale; }
-float ICM20948::RawData::GetTemperature() const { return (temp / 333.87f) + 21.0f; }
-
 #ifdef DEBUG
 #include <stdio.h>
 #endif
@@ -359,21 +345,21 @@ int ICM20948::Calibrate(int max_iterations, int16_t target_error)
             return (x + ((x >> 15) & 63)) >> 6;
         };
 
-        offsets.acc_x_offset  -= divide_by_64_fast(data.x);
-        offsets.acc_y_offset  -= divide_by_64_fast(data.y);
-        offsets.acc_z_offset  -= divide_by_64_fast(data.z);
-        offsets.gyro_x_offset -= divide_by_64_fast(data.ax);
-        offsets.gyro_y_offset -= divide_by_64_fast(data.ay);
-        offsets.gyro_z_offset -= divide_by_64_fast(data.az);
+        offsets.acc_x_offset  -= divide_by_64_fast(data.Accel.GetRawX());
+        offsets.acc_y_offset  -= divide_by_64_fast(data.Accel.GetRawY());
+        offsets.acc_z_offset  -= divide_by_64_fast(data.Accel.GetRawZ());
+        offsets.gyro_x_offset -= divide_by_64_fast(data.Gyro.GetRawX());
+        offsets.gyro_y_offset -= divide_by_64_fast(data.Gyro.GetRawY());
+        offsets.gyro_z_offset -= divide_by_64_fast(data.Gyro.GetRawZ());
 
         WriteCalibrationOffsets(offsets); // Apply new offsets to the sensor
 
         /* Calculate the maximum error between the current readings and the target values */
         auto get_error = [&data]() {
-            int16_t *ptr = reinterpret_cast<int16_t*>(&data);
+        	std::array<int16_t, 6> results = { data.Accel.GetRawX(), data.Accel.GetRawY(), data.Accel.GetRawZ(), data.Gyro.GetRawX(), data.Gyro.GetRawY(), data.Gyro.GetRawZ() };
             int16_t max_error = 0;
             for (size_t k = 0; k < 6; k++) {
-                int16_t error = std::abs(*ptr++);
+                int16_t error = std::abs(results[k]);
                 if (error > max_error)
                     max_error = error;
             }
@@ -384,7 +370,14 @@ int ICM20948::Calibrate(int max_iterations, int16_t target_error)
         int16_t error = get_error();
 #ifdef DEBUG
         printf("Iter %3d: x=%6d y=%6d z=%6d gx=%6d gy=%6d gz=%6d Err=%d\n",
-               i + 1, data.x, data.y, data.z, data.ax, data.ay, data.az, error);
+               i + 1,
+			   data.Accel.GetRawX(),
+			   data.Accel.GetRawY(),
+			   data.Accel.GetRawZ(),
+			   data.Gyro.GetRawX(),
+			   data.Gyro.GetRawY(),
+			   data.Gyro.GetRawZ(),
+			   error);
 #endif
         if (error < target_error) {
             res = 0;
@@ -782,16 +775,15 @@ int ICM20948_DMP::Init()
     return 0;
 }
 
-ICM20948_DMP::RealIMUData ICM20948_DMP::GetRealIMUData()
+IMU::ImuRealData<double> ICM20948_DMP::GetRealIMUData()
 {
-    RealIMUData output = {};
 #pragma pack(push, 1)
     struct DMP_QuatPacket
     {
         int32_t x;
         int32_t y;
         int32_t z;
-        int32_t w; // ИСПРАВЛЕНО: Это не dummy, это реальный W от DMP
+        int32_t w;
     };
 #pragma pack(pop)
     static_assert(sizeof(DMP_QuatPacket) == 16, "DMP_QuatPacket must be exactly 16 bytes to match the DMP output format");
@@ -817,31 +809,15 @@ ICM20948_DMP::RealIMUData ICM20948_DMP::GetRealIMUData()
     out_quat.z = static_cast<float>(qz) / q_scale;
     out_quat.w = static_cast<float>(qw) / q_scale;
 
-    float norm = std::sqrt(out_quat.w * out_quat.w + out_quat.x * out_quat.x +
-                           out_quat.y * out_quat.y + out_quat.z * out_quat.z);
-    if (norm > 0.0f) {
-        out_quat.w /= norm;
-        out_quat.x /= norm;
-        out_quat.y /= norm;
-        out_quat.z /= norm;
-    }
-
-    // Roll
-    output.roll = std::atan2(2.0f * (out_quat.w * out_quat.x + out_quat.y * out_quat.z),
-                             1.0f - 2.0f * (out_quat.x * out_quat.x + out_quat.y * out_quat.y));
-
-    // Pitch
-    float pitch_val = 2.0f * (out_quat.w * out_quat.y - out_quat.z * out_quat.x);
-    output.pitch = std::asin(std::clamp(pitch_val, -1.0f, 1.0f));
-
-    // Yaw
-    output.yaw = std::atan2(2.0f * (out_quat.w * out_quat.z + out_quat.x * out_quat.y),
-                            1.0f - 2.0f * (out_quat.y * out_quat.y + out_quat.z * out_quat.z));
-
-    return output;
+    return IMU::ImuRealData<double>(
+		static_cast<double>(out_quat.w),
+		static_cast<double>(out_quat.x),
+		static_cast<double>(out_quat.y),
+		static_cast<double>(out_quat.z)
+	);
 }
 
-ICM20948_DMP::RealIMUData ICM20948_DMP::WaitForRealIMUData()
+IMU::ImuRealData<double> ICM20948_DMP::WaitForRealIMUData()
 {
 	while (!IsMDPDataReady()) {}
 	return GetRealIMUData();

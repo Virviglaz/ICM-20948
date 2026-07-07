@@ -47,6 +47,7 @@
 
 #include <cstdint>
 #include "devices.h"
+#include "imu.h"
 
 /**
  * Abstract base class for ICM-20948 interfaces (I2C, SPI, etc.)
@@ -251,31 +252,12 @@ public:
     void SetSynchronizedSampleRate(IcmOdr target_odr);
 
     /**
-     * RawData struct represents the raw sensor data read from the ICM-20948. It includes raw accelerometer, gyroscope, and temperature readings.
-     * The GetTemperature(), GetAccX(), GetAccY(), GetAccZ(), GetGyroX(), GetGyroY(), and GetGyroZ() methods convert the raw readings to
-     * real-world units (°C for temperature, g for acceleration, and °/s for angular velocity) based on the current gain settings.
+     * @brief Holds raw accelerometer and gyroscope data from the sensor.
      */
-    class RawData {
-        friend class ICM20948;
+    class RawData : public IMU::RawData_6DOF_Base {
     public:
-        RawData(float acc_scale, float gyro_scale)
-            : _acc_scale(acc_scale), _gyro_scale(gyro_scale) {}
-        float GetAccX() const;
-        float GetAccY() const;
-        float GetAccZ() const;
-        float GetGyroX() const;
-        float GetGyroY() const;
-        float GetGyroZ() const;
-        float GetTemperature() const;
-    private:
-        int16_t x; /* ICM-20948_RA_ACCEL_XOUT H/L */
-        int16_t y; /* ICM-20948_RA_ACCEL_YOUT H/L */
-        int16_t z; /* ICM-20948_RA_ACCEL_ZOUT H/L */
-        int16_t ax; /* ICM-20948_RA_GYRO_XOUT H/L */
-        int16_t ay; /* ICM-20948_RA_GYRO_YOUT H/L */
-        int16_t az; /* ICM-20948_RA_GYRO_ZOUT H/L */
-        int16_t temp; /* ICM-20948_RA_TEMP_OUT H/L */
-        float _acc_scale, _gyro_scale; /* Scaling factors for accelerometer and gyroscope */
+    	float GetTemperature() const override { return (temperature / 333.87f) + 21.0f; }
+    	using RawData_6DOF_Base::RawData_6DOF_Base;
     };
 
     /**
@@ -449,34 +431,18 @@ public:
     int Init() override;
 
     /**
-     * Struct to hold the real-world IMU data obtained from the DMP.
-     * This includes roll, pitch, and yaw angles in degrees,
-     * angular velocity (gx, gy, gz) in degrees per second,
-     * and linear acceleration (ax_linear, ay_linear, az_linear) in m/s².
-     * The GetRealIMUData() method reads raw DMP data from the FIFO buffer,
-     * converts it to real-world units, and returns it as a RealIMUData struct.
-     * The conversion includes normalizing quaternions, calculating Euler angles,
-     * converting gyro data to degrees per second, and calculating linear
-     * acceleration by removing the gravity component.
-     */
-    struct RealIMUData
-    {
-        float roll, pitch, yaw;                // angles in degrees
-    };
-
-    /**
      * Read real-world IMU data from the DMP.
      *
-     * @return A RealIMUData struct containing roll, pitch, yaw, angular velocity, and linear acceleration.
+     * @return A IMU::ImuRealData<double> struct containing roll, pitch, yaw.
      */
-    RealIMUData GetRealIMUData();
+    IMU::ImuRealData<double> GetRealIMUData();
 
     /**
-     * @brief Reads the raw quaternion data from the DMP FIFO buffer.
+     * @brief Wait for data and read the DMP FIFO buffer.
      *
-     * @return A struct containing the raw quaternion values (w, x, y, z) as 16-bit signed integers.
+     * @return A IMU::ImuRealData<double> struct containing roll, pitch, yaw.
      */
-    RealIMUData WaitForRealIMUData();
+    IMU::ImuRealData<double> WaitForRealIMUData();
 protected:
     virtual void ResetFIFO() override;
     virtual void EnableFifo() override;
