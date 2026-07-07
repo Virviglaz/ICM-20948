@@ -102,15 +102,17 @@ const uint8_t ACCEL_SMPLRT_DIV_1 = 0x10;
 const uint8_t ACCEL_SMPLRT_DIV_2 = 0x11;
 
 // User Bank 3 registers
+const uint8_t I2C_MST_ODR_CONFIG = 0x00; // Aux I2C master transaction scheduler ODR/divider config
 const uint8_t I2C_MST_CTRL   = 0x01;
+const uint8_t I2C_MST_DELAY_CTRL = 0x02; // Per-slave transaction delay/shadow enable bits
 const uint8_t I2C_SLV0_ADDR  = 0x03;
 const uint8_t I2C_SLV0_REG   = 0x04;
 const uint8_t I2C_SLV0_CTRL  = 0x05;
 const uint8_t I2C_SLV0_DO    = 0x06;
 const uint8_t I2C_SLV4_ADDR  = 0x13;
 const uint8_t I2C_SLV4_REG   = 0x14;
-const uint8_t I2C_SLV4_DO    = 0x15;
-const uint8_t I2C_SLV4_CTRL  = 0x16;
+const uint8_t I2C_SLV4_CTRL  = 0x15;
+const uint8_t I2C_SLV4_DO    = 0x16;
 
 // AK09916 Magnetometer configuration
 const uint8_t AK09916_I2C_ADDR = 0x0C;
