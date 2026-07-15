@@ -145,14 +145,14 @@ private:
  *
  * @note This class provides a basic implementation for the ICM-20948 sensor.
  */
-class ICM20948
+class ICM20948 : public IMU::DeviceBase
 {
 public:
     explicit ICM20948(ICM20948_IFS_Base& ifs) : ifs_(ifs) {}
     ~ICM20948() = default;
 
     int Reset();
-    virtual int Init();
+    virtual int Init() override;
 
     enum class AccelFSR : uint8_t
     {
@@ -265,7 +265,7 @@ public:
      * It is recommended to use EnableDataReadyInterrupt() and override IsDataReady() for a more efficient implementation
      * that does not rely on busy-waiting.
      */
-    RawData WaitForData();
+    RawData& WaitForData() override;
 
     /**
      * @brief Wait for new sensor data to be available and returns the raw data.
@@ -277,7 +277,7 @@ public:
      * This method reads the raw accelerometer, gyroscope, and temperature data from the ICM-20948 and returns it as a RawData
      * struct. The raw values are in big-endian format and are converted to native endianness before being returned.
      */
-    RawData GetData();
+    RawData& GetData() override;
 
     /**
      * @brief Performs a calibration of the ICM-20948 sensor.
@@ -381,6 +381,7 @@ protected:
     uint16_t FifoCount();
     void SwitchMemoryBank(uint8_t bank);
     bool isFifoEnabled = false;
+    RawData cached_data;
 
     virtual uint16_t GetPacketSize() const { return 14; } /* 6 bytes accel + 6 bytes gyro + 2 bytes temp */
 private:
@@ -415,7 +416,7 @@ protected:
 };
 #endif /* MAGNETOMETER_SUPPORT */
 
-class ICM20948_DMP : public ICM20948
+class ICM20948_DMP : public IMU::DMP_DeviceBase<double>, public ICM20948
 {
 public:
     explicit ICM20948_DMP(ICM20948_IFS_Base& ifs) : ICM20948(ifs) {}
@@ -435,19 +436,20 @@ public:
      *
      * @return A IMU::ImuRealData<double> struct containing roll, pitch, yaw.
      */
-    IMU::ImuRealData<double> GetRealIMUData();
+    IMU::RealData<double>& GetRealIMUData() override;
 
     /**
      * @brief Wait for data and read the DMP FIFO buffer.
      *
      * @return A IMU::ImuRealData<double> struct containing roll, pitch, yaw.
      */
-    IMU::ImuRealData<double> WaitForRealIMUData();
+    IMU::RealData<double>& WaitForRealIMUData() override;
 protected:
     virtual void ResetFIFO() override;
     virtual void EnableFifo() override;
     virtual uint16_t GetPacketSize() const override { return 16; }
     virtual bool IsMDPDataReady();
+    IMU::RealData<double> cached_real_data;
 };
 
 

@@ -46,8 +46,10 @@
 #define ICM_20948_REGISTERS_H
 
 const uint8_t WHO_AM_I = 0x00; // WHO_AM_I register address (User Bank 0)
-const uint8_t GYRO_CONFIG_1 = 0x01; // Gyroscope Configuration Register 1 (User Bank 2)
-const uint8_t ACCEL_CONFIG = 0x14;   // Accelerometer Configuration Register (User Bank 2)
+const uint8_t GYRO_CONFIG_1 = 0x01; // Gyroscope Configuration Register 1 (User Bank 2): FCHOICE[0], FS_SEL[2:1], DLPFCFG[5:3]
+const uint8_t GYRO_CONFIG_2 = 0x02;  // Gyroscope Configuration Register 2 (User Bank 2): GYRO_AVGCFG[2:0]
+const uint8_t ACCEL_CONFIG = 0x14;   // Accelerometer Configuration Register (User Bank 2): FCHOICE[0], FS_SEL[2:1], DLPFCFG[5:3]
+const uint8_t ACCEL_CONFIG_2 = 0x15; // Accelerometer Configuration Register 2 (User Bank 2): DEC3_CFG[1:0]
 
 // User Bank 0 registers
 const uint8_t PWR_MGMT_1     = 0x06;

@@ -171,6 +171,10 @@ int ICM20948::Reset()
     // 4. Wake up the chip from default SLEEP mode and set clock source to Auto (0x01)
     // Writing 0x01 clears the BIT_SLEEP (0x40) and sets the clock
     ifs_.WriteReg(PWR_MGMT_1, CLK_BEST_AVAIL);
+
+	if (ifs_.ReadReg(PWR_MGMT_1) & 0x40) {
+		return -EIO; // Error: Failed to wake up the chip (hardware failure)
+	}
     
     return 0; // Reset and wake up completed successfully
 }
@@ -186,35 +190,66 @@ int ICM20948::Init()
     ifs_.WriteReg(PWR_MGMT_2, 0x00); // PWR_MGMT_2 register, enable all sensors
     ifs_.WriteReg(INT_ENABLE_1, 0x01);
 
+    // Explicitly (re)apply the full scale range so the ACCEL_FS_SEL/GYRO_FS_SEL
+    // register bits are guaranteed to match current_accel_fsr_/current_gyro_fsr_,
+    // which are used to scale raw counts to physical units in GetData().
+    SetAccelFSR(current_accel_fsr_);
+    SetGyroFSR(current_gyro_fsr_);
+
     return 0;
 }
 
 void ICM20948::SetAccelFSR(AccelFSR fsr)
 {
     current_accel_fsr_ = fsr; // Store the current accelerometer full scale range
-    uint8_t fsr_value = static_cast<uint8_t>(fsr);
     SwitchMemoryBank(2); // Switch to user bank 2 to access ACCEL_CONFIG register
-    ifs_.WriteReg(ACCEL_CONFIG, fsr_value); // Write the FSR value to the ACCEL_CONFIG register (User Bank 2)
+
+    // ACCEL_CONFIG bit layout: FCHOICE[0], ACCEL_FS_SEL[2:1], ACCEL_DLPFCFG[5:3].
+    // Only update the FS_SEL bits and preserve FCHOICE/DLPFCFG via read-modify-write,
+    // otherwise the DLPF/FCHOICE configuration would be silently reset every call.
+    uint8_t reg = ifs_.ReadReg(ACCEL_CONFIG);
+    reg &= ~(0x03 << 1);
+    reg |= (static_cast<uint8_t>(fsr) & 0x03) << 1;
+    ifs_.WriteReg(ACCEL_CONFIG, reg);
 }
 
 void ICM20948::SetGyroFSR(GyroFSR fsr)
 {
     current_gyro_fsr_ = fsr; // Store the current gyroscope full scale range
-    uint8_t fsr_value = static_cast<uint8_t>(fsr);
     SwitchMemoryBank(2); // Switch to user bank 2 to access GYRO_CONFIG_1 register
-    ifs_.WriteReg(GYRO_CONFIG_1, fsr_value); // Write the FSR value to the GYRO_CONFIG_1 register (User Bank 2)
+
+    // GYRO_CONFIG_1 bit layout: FCHOICE[0], GYRO_FS_SEL[2:1], GYRO_DLPFCFG[5:3].
+    uint8_t reg = ifs_.ReadReg(GYRO_CONFIG_1);
+    reg &= ~(0x03 << 1);
+    reg |= (static_cast<uint8_t>(fsr) & 0x03) << 1;
+    ifs_.WriteReg(GYRO_CONFIG_1, reg);
 }
 
 void ICM20948::SetAccelAvgRate(AccelAvgRate rate)
 {
-    SwitchMemoryBank(2); // Switch to user bank 2 to access ACCEL_CONFIG register
-    ifs_.WriteReg(ACCEL_CONFIG, static_cast<uint8_t>(rate));
+    // NOTE: averaging/decimation for the accelerometer lives in ACCEL_CONFIG_2
+    // (DEC3_CFG bits [1:0]), NOT in ACCEL_CONFIG (which holds ACCEL_FS_SEL).
+    // Writing to ACCEL_CONFIG here would silently corrupt the full scale range
+    // set by SetAccelFSR() and desynchronize it from current_accel_fsr_, which
+    // is used to convert raw counts to g's in GetData() - this was the source
+    // of incorrect scaling and IMU drift.
+    SwitchMemoryBank(2); // Switch to user bank 2 to access ACCEL_CONFIG_2 register
+    uint8_t reg = ifs_.ReadReg(ACCEL_CONFIG_2);
+    reg &= ~0x03;
+    reg |= static_cast<uint8_t>(rate) & 0x03;
+    ifs_.WriteReg(ACCEL_CONFIG_2, reg);
 }
 
 void ICM20948::SetGyroAvgRate(GyroAvgRate rate)
 {
-    SwitchMemoryBank(2); // Switch to user bank 2 to access GYRO_CONFIG_1 register
-    ifs_.WriteReg(GYRO_CONFIG_1, static_cast<uint8_t>(rate));
+    // NOTE: averaging for the gyroscope lives in GYRO_CONFIG_2 (GYRO_AVGCFG
+    // bits [2:0]), NOT in GYRO_CONFIG_1 (which holds GYRO_FS_SEL). See note
+    // in SetAccelAvgRate() above.
+    SwitchMemoryBank(2); // Switch to user bank 2 to access GYRO_CONFIG_2 register
+    uint8_t reg = ifs_.ReadReg(GYRO_CONFIG_2);
+    reg &= ~0x07;
+    reg |= static_cast<uint8_t>(rate) & 0x07;
+    ifs_.WriteReg(GYRO_CONFIG_2, reg);
 }
 
 void ICM20948::SetSynchronizedSampleRate(IcmOdr target_odr)
@@ -260,13 +295,13 @@ void ICM20948::SetSynchronizedSampleRate(IcmOdr target_odr)
     ifs_.WriteReg(ACCEL_SMPLRT_DIV_2, accel_div_l);
 }
 
-ICM20948::RawData ICM20948::WaitForData()
+ICM20948::RawData& ICM20948::WaitForData()
 {
     while (!IsDataReady()) {};
     return GetData();
 }
 
-ICM20948::RawData ICM20948::GetData()
+ICM20948::RawData& ICM20948::GetData()
 {
     SwitchMemoryBank(0); // Ensure we are in Bank 0 to read sensor data registers
 
@@ -286,13 +321,13 @@ ICM20948::RawData ICM20948::GetData()
     #pragma pack(pop)
 
 	if (isFifoEnabled) {
-		ifs_.Read(FIFO_R_W, data_union.be_buffer, sizeof(data_union.be_buffer)); // Read 12 bytes of sensor data from FIFO
+		ifs_.Read(FIFO_R_W, data_union.be_buffer, sizeof(data_union.be_buffer)); // Read 14 bytes of sensor data from FIFO
 	} else {
 		ifs_.Read(ACCEL_XOUT_H, data_union.be_buffer,
 				sizeof(data_union.be_buffer)); // Read 14 bytes of sensor data starting from ACCEL_XOUT_H
 	}
 
-    return ICM20948::RawData(
+	cached_data = ICM20948::RawData(
     		IMU::RawData16_XYZ( // acceleration data
     				BigEndianToNative(data_union.data_struct.x),
     				BigEndianToNative(data_union.data_struct.y),
@@ -305,6 +340,8 @@ ICM20948::RawData ICM20948::GetData()
 					static_cast<float>(131.0f / (1 << static_cast<uint8_t>(current_gyro_fsr_)))),
 			static_cast<float>(BigEndianToNative(data_union.data_struct.temp))
 	);
+
+	return cached_data;
 }
 
 uint16_t ICM20948::FifoCount()
@@ -775,7 +812,7 @@ int ICM20948_DMP::Init()
     return 0;
 }
 
-IMU::ImuRealData<double> ICM20948_DMP::GetRealIMUData()
+IMU::RealData<double>& ICM20948_DMP::GetRealIMUData()
 {
 #pragma pack(push, 1)
     struct DMP_QuatPacket
@@ -809,15 +846,17 @@ IMU::ImuRealData<double> ICM20948_DMP::GetRealIMUData()
     out_quat.z = static_cast<float>(qz) / q_scale;
     out_quat.w = static_cast<float>(qw) / q_scale;
 
-    return IMU::ImuRealData<double>(
+    cached_real_data = IMU::RealData<double>(
 		static_cast<double>(out_quat.w),
 		static_cast<double>(out_quat.x),
 		static_cast<double>(out_quat.y),
 		static_cast<double>(out_quat.z)
 	);
+
+    return cached_real_data;
 }
 
-IMU::ImuRealData<double> ICM20948_DMP::WaitForRealIMUData()
+IMU::RealData<double>& ICM20948_DMP::WaitForRealIMUData()
 {
 	while (!IsMDPDataReady()) {}
 	return GetRealIMUData();
