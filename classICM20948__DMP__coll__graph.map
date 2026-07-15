@@ -1,7 +1,15 @@
 <map id="ICM20948_DMP" name="ICM20948_DMP">
-<area shape="rect" id="Node000001" title=" " alt="" coords="19,168,143,193"/>
-<area shape="rect" id="Node000002" href="$classICM20948.html" title=" " alt="" coords="38,93,125,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,133,84,168,79,168,79,133"/>
-<area shape="rect" id="Node000003" href="$classICM20948__IFS__Base.html" title=" " alt="" coords="5,5,157,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="84,45,84,93,79,93,79,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="61,257,185,283"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,168,208,208"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,221,123,257,118,258,110,222"/>
+<area shape="rect" id="Node000003" href="$classICM20948.html" title=" " alt="" coords="233,175,319,201"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="243,209,146,260,143,255,241,204"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="9,80,175,105"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="128,109,254,173,252,178,126,114"/>
+<area shape="rect" id="Node000005" href="$classICM20948__IFS__Base.html" title=" " alt="" coords="200,80,352,105"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="279,119,279,175,273,175,273,119"/>
+<area shape="rect" id="Node000006" href="$classICM20948_1_1RawData.html" title="Holds raw accelerometer and gyroscope data from the sensor." alt="" coords="376,80,531,105"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="421,114,299,178,297,173,418,109"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="355,5,552,31"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="456,45,456,80,451,80,451,45"/>
 </map>
