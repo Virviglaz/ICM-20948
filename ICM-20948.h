@@ -416,7 +416,10 @@ protected:
 };
 #endif /* MAGNETOMETER_SUPPORT */
 
-class ICM20948_DMP : public IMU::DMP_DeviceBase<double>, public ICM20948
+using IMU_DMP_DeviceBase = IMU::DMP_DeviceBase<double>;
+using IMU_DMP_Quaternion = IMU::Quaternion<double>;
+
+class ICM20948_DMP : public IMU_DMP_DeviceBase, public ICM20948
 {
 public:
     explicit ICM20948_DMP(ICM20948_IFS_Base& ifs) : ICM20948(ifs) {}
@@ -436,20 +439,20 @@ public:
      *
      * @return A IMU::ImuRealData<double> struct containing roll, pitch, yaw.
      */
-    IMU::RealData<double>& GetRealIMUData() override;
+    IMU_DMP_Quaternion& GetQuaternion() override;
 
     /**
      * @brief Wait for data and read the DMP FIFO buffer.
      *
      * @return A IMU::ImuRealData<double> struct containing roll, pitch, yaw.
      */
-    IMU::RealData<double>& WaitForRealIMUData() override;
+    IMU_DMP_Quaternion& WaitForQuaternion() override;
 protected:
     virtual void ResetFIFO() override;
     virtual void EnableFifo() override;
     virtual uint16_t GetPacketSize() const override { return 16; }
-    virtual bool IsMDPDataReady();
-    IMU::RealData<double> cached_real_data;
+    virtual bool IsDMPDataReady();
+    IMU_DMP_Quaternion cached_quaternion;
 };
 
 

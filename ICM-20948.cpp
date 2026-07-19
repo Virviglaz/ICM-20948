@@ -812,7 +812,7 @@ int ICM20948_DMP::Init()
     return 0;
 }
 
-IMU::RealData<double>& ICM20948_DMP::GetRealIMUData()
+IMU_DMP_Quaternion& ICM20948_DMP::GetQuaternion()
 {
 #pragma pack(push, 1)
     struct DMP_QuatPacket
@@ -846,20 +846,20 @@ IMU::RealData<double>& ICM20948_DMP::GetRealIMUData()
     out_quat.z = static_cast<float>(qz) / q_scale;
     out_quat.w = static_cast<float>(qw) / q_scale;
 
-    cached_real_data = IMU::RealData<double>(
+    cached_quaternion = IMU_DMP_Quaternion(
 		static_cast<double>(out_quat.w),
 		static_cast<double>(out_quat.x),
 		static_cast<double>(out_quat.y),
 		static_cast<double>(out_quat.z)
 	);
 
-    return cached_real_data;
+    return cached_quaternion;
 }
 
-IMU::RealData<double>& ICM20948_DMP::WaitForRealIMUData()
+IMU_DMP_Quaternion& ICM20948_DMP::WaitForQuaternion()
 {
-	while (!IsMDPDataReady()) {}
-	return GetRealIMUData();
+	while (!IsDMPDataReady()) {}
+	return GetQuaternion();
 }
 
 void ICM20948_DMP::ResetFIFO()
@@ -885,7 +885,7 @@ void ICM20948_DMP::EnableFifo()
     ResetFIFO();
 }
 
-bool ICM20948_DMP::IsMDPDataReady()
+bool ICM20948_DMP::IsDMPDataReady()
 {
 	return FifoCount() >= GetPacketSize();
 }
